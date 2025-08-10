@@ -8,6 +8,17 @@ BOLT is a fast and secure file sharing application that allows users to upload f
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (August 2024)
+
+### File Sharing Implementation
+- ✅ Complete file upload/download system working
+- ✅ Local storage in `/uploads/` directory 
+- ✅ 6-character sharing codes (e.g., "I9K7GD")
+- ✅ 24-hour auto-expiration
+- ✅ Download code input on homepage
+- ✅ Mobile-responsive hamburger menu
+- ✅ Dark/light theme toggle
+
 ## System Architecture
 
 ### Frontend Architecture

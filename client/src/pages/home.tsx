@@ -1,12 +1,19 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 import { Navigation } from '@/components/navigation';
 import { FileUpload } from '@/components/file-upload';
 import { FileCard } from '@/components/file-card';
-import { Rocket, Shield, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Rocket, Shield, Users, Download, ArrowRight } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
   const [showFileManager, setShowFileManager] = useState(false);
+  const [downloadCode, setDownloadCode] = useState('');
+  const [, navigate] = useLocation();
+  const { toast } = useToast();
 
   const { data: files = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/files'],
@@ -21,6 +28,20 @@ export default function Home() {
         behavior: 'smooth' 
       });
     }, 100);
+  };
+
+  const handleDownloadSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (downloadCode.trim()) {
+      const code = downloadCode.trim().toUpperCase();
+      navigate(`/d/${code}`);
+    } else {
+      toast({
+        title: "Enter a code",
+        description: "Please enter a 6-character sharing code.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -60,8 +81,49 @@ export default function Home() {
           </div>
 
           {/* Upload Zone */}
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto mb-16">
             <FileUpload onUploadSuccess={handleUploadSuccess} />
+          </div>
+
+          {/* Download Section */}
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-3">
+                Download Files
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                Enter a 6-character sharing code to download files
+              </p>
+            </div>
+
+            <form onSubmit={handleDownloadSubmit} className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <Input
+                    type="text"
+                    placeholder="Enter sharing code (e.g., ABC123)"
+                    value={downloadCode}
+                    onChange={(e) => setDownloadCode(e.target.value)}
+                    maxLength={6}
+                    className="h-12 text-lg text-center font-mono uppercase tracking-wider bg-gray-50 dark:bg-slate-700 border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+                  />
+                </div>
+                <Button 
+                  type="submit"
+                  className="h-12 px-8 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <Download className="w-5 h-5 mr-2" />
+                  Download
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+              
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Codes are case-insensitive and expire after 24 hours
+                </p>
+              </div>
+            </form>
           </div>
         </div>
       </section>
