@@ -33,8 +33,8 @@ export default function Home() {
           {/* Hero Content */}
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-5xl sm:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-              Share Files
-              <span className="bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent ml-4">
+              Share Files{' '}
+              <span className="bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">
                 Instantly
               </span>
             </h2>

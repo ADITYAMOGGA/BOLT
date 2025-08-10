@@ -195,6 +195,20 @@
 /* Gradient text */
 .bg-gradient-to-r.from-blue-600.to-emerald-500 {
   background: linear-gradient(to right, #2563eb, #059669);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Ensure gradient text works properly */
+.bg-clip-text {
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.text-transparent {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Custom scrollbar */
