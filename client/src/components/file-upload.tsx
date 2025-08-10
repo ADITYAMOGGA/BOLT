@@ -27,9 +27,21 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
       }, 200);
 
       try {
-        const response = await apiRequest('POST', '/api/upload', formData);
+        // Use fetch directly for file uploads to avoid setting Content-Type header
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        });
+
         clearInterval(progressInterval);
         setUploadProgress(100);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`${response.status}: ${errorText}`);
+        }
+
         return response.json();
       } catch (error) {
         clearInterval(progressInterval);
