@@ -12,7 +12,8 @@ import {
   Link,
   Share,
   Trash2,
-  Check
+  Check,
+  Lock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,6 +28,7 @@ interface FileData {
   mimeType: string;
   expiresAt: string;
   downloadCount: number;
+  hasPassword?: boolean;
 }
 
 interface FileCardProps {
@@ -127,9 +129,17 @@ export function FileCard({ file }: FileCardProps) {
           <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getIconColor(file.mimeType)}`}>
             {getFileIcon(file.mimeType)}
           </div>
-          <Badge variant="secondary" className="bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300">
-            Active
-          </Badge>
+          <div className="flex space-x-2">
+            {file.hasPassword && (
+              <Badge variant="secondary" className="bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300">
+                <Lock className="w-3 h-3 mr-1" />
+                Protected
+              </Badge>
+            )}
+            <Badge variant="secondary" className="bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300">
+              Active
+            </Badge>
+          </div>
         </div>
         
         <h4 className="font-semibold text-gray-900 dark:text-white mb-2 truncate" title={file.originalName}>

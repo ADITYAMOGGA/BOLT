@@ -1,15 +1,22 @@
+import { useState } from 'react';
 import { useParams, useLocation } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { Navigation } from '@/components/navigation';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { Download, FileText, Image, Film, Music, Archive, File as FileIcon, AlertCircle } from 'lucide-react';
+import { Download, FileText, Image, Film, Music, Archive, File as FileIcon, AlertCircle, Lock, Calendar, HardDrive } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
+import { format } from 'date-fns';
 
 export default function DownloadPage() {
   const { code } = useParams<{ code: string }>();
   const [, navigate] = useLocation();
+  const [password, setPassword] = useState('');
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
   const { toast } = useToast();
 
   const { data: file, isLoading, error } = useQuery<any>({
@@ -19,7 +26,19 @@ export default function DownloadPage() {
 
   const downloadMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`/api/download/${code}`);
+      const response = await fetch(`/api/download/${code}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+      
+      if (response.status === 401) {
+        setShowPasswordInput(true);
+        throw new Error('Invalid password');
+      }
+      
       if (!response.ok) {
         throw new Error('Download failed');
       }
@@ -40,6 +59,9 @@ export default function DownloadPage() {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
+      
+      setPassword('');
+      setShowPasswordInput(false);
     },
     onSuccess: () => {
       toast({
@@ -47,12 +69,20 @@ export default function DownloadPage() {
         description: "Your file download has begun.",
       });
     },
-    onError: () => {
-      toast({
-        title: "Download failed",
-        description: "Could not download the file. It may have expired.",
-        variant: "destructive",
-      });
+    onError: (error: any) => {
+      if (error.message === 'Invalid password') {
+        toast({
+          title: "Invalid password",
+          description: "Please enter the correct password to download this file.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Download failed",
+          description: "Could not download the file. It may have expired.",
+          variant: "destructive",
+        });
+      }
     },
   });
 
@@ -162,31 +192,68 @@ export default function DownloadPage() {
                 </div>
               </div>
               
+              {/* Password Protection Notice */}
+              {file.hasPassword && (
+                <div className="mb-6 p-4 bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-xl">
+                  <div className="flex items-center justify-center space-x-2 text-orange-700 dark:text-orange-300">
+                    <Lock className="w-5 h-5" />
+                    <span className="font-medium">This file is password protected</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Password Input */}
+              {(file.hasPassword || showPasswordInput) && (
+                <div className="mb-6">
+                  <Label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    File Password
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Enter password to download"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full max-w-md mx-auto bg-gray-50 dark:bg-slate-700 border-gray-300 dark:border-slate-600"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        downloadMutation.mutate();
+                      }
+                    }}
+                  />
+                </div>
+              )}
+
               {/* Download Button */}
               <Button
                 onClick={() => downloadMutation.mutate()}
-                disabled={downloadMutation.isPending}
-                className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-12 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg mb-6"
+                disabled={downloadMutation.isPending || (file.hasPassword && !password)}
+                className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-12 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Download className="w-6 h-6 mr-3" />
                 {downloadMutation.isPending ? 'Downloading...' : 'Download File'}
               </Button>
               
               {/* File Details */}
-              <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
-                <p>
-                  File expires in{' '}
-                  <span className="font-semibold text-gray-900 dark:text-white">
-                    {getTimeLeft(file.expiresAt)}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-300">
+                <div className="flex items-center justify-center space-x-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>
+                    Expires in <strong className="text-gray-900 dark:text-white">{getTimeLeft(file.expiresAt)}</strong>
                   </span>
-                </p>
-                <p>
-                  Downloaded{' '}
-                  <span className="font-semibold text-gray-900 dark:text-white">
-                    {file.downloadCount}
-                  </span>{' '}
-                  time{file.downloadCount !== 1 ? 's' : ''}
-                </p>
+                </div>
+                <div className="flex items-center justify-center space-x-2">
+                  <HardDrive className="w-4 h-4" />
+                  <span>
+                    Downloaded <strong className="text-gray-900 dark:text-white">{file.downloadCount}</strong> time{file.downloadCount !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <div className="flex items-center justify-center space-x-2">
+                  <Lock className={`w-4 h-4 ${file.hasPassword ? 'text-orange-500' : 'text-gray-400'}`} />
+                  <span>
+                    {file.hasPassword ? 'Protected' : 'No password'}
+                  </span>
+                </div>
               </div>
             </CardContent>
           </Card>

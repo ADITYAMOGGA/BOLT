@@ -10,6 +10,7 @@ export const files = pgTable("files", {
   mimeType: text("mime_type").notNull(),
   size: integer("size").notNull(),
   code: varchar("code", { length: 6 }).notNull().unique(),
+  password: text("password"), // Optional password for protected files
   downloadCount: integer("download_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
   expiresAt: timestamp("expires_at").notNull(),
@@ -19,6 +20,7 @@ export const insertFileSchema = createInsertSchema(files).pick({
   originalName: true,
   mimeType: true,
   size: true,
+  password: true,
 });
 
 export type InsertFile = z.infer<typeof insertFileSchema>;

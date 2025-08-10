@@ -29,6 +29,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         mimeType: req.file.mimetype,
         size: req.file.size,
         filename: req.file.filename,
+        password: req.body.password || null,
       };
 
       const file = await storage.createFile(fileData);
@@ -42,6 +43,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         mimeType: file.mimeType,
         expiresAt: file.expiresAt,
         downloadCount: file.downloadCount,
+        hasPassword: !!file.password,
       });
     } catch (error) {
       console.error("Upload error:", error);
@@ -67,6 +69,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         mimeType: file.mimeType,
         expiresAt: file.expiresAt,
         downloadCount: file.downloadCount,
+        hasPassword: !!file.password,
       });
     } catch (error) {
       console.error("Get file error:", error);
@@ -75,13 +78,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Download file
-  app.get("/api/download/:code", async (req, res) => {
+  app.post("/api/download/:code", async (req, res) => {
     try {
       const { code } = req.params;
+      const { password } = req.body;
       const file = await storage.getFileByCode(code);
       
       if (!file) {
         return res.status(404).json({ message: "File not found or expired" });
+      }
+
+      // Check password if file is protected
+      if (file.password && file.password !== password) {
+        return res.status(401).json({ message: "Invalid password" });
       }
 
       const filePath = storage.getFilePath(file.id);
@@ -112,6 +121,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         mimeType: file.mimeType,
         expiresAt: file.expiresAt,
         downloadCount: file.downloadCount,
+        hasPassword: !!file.password,
       }));
       
       res.json(fileList);

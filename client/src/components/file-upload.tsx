@@ -2,9 +2,12 @@ import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import { CloudUpload, Plus, Loader2 } from 'lucide-react';
+import { CloudUpload, Plus, Loader2, Lock, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 
 interface FileUploadProps {
@@ -13,6 +16,8 @@ interface FileUploadProps {
 
 export function FileUpload({ onUploadSuccess }: FileUploadProps) {
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [usePassword, setUsePassword] = useState(false);
+  const [password, setPassword] = useState('');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -20,6 +25,9 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append('file', file);
+      if (usePassword && password) {
+        formData.append('password', password);
+      }
 
       // Simulate progress for better UX
       const progressInterval = setInterval(() => {
@@ -49,14 +57,19 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
         throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setUploadProgress(0);
+      setPassword('');
+      setUsePassword(false);
       queryClient.invalidateQueries({ queryKey: ['/api/files'] });
+      
+      const protectionMessage = data.hasPassword ? " (Password protected)" : "";
       toast({
-        title: "Upload successful!",
-        description: "Your file has been uploaded and is ready to share.",
+        title: "File uploaded successfully!",
+        description: `Share this code: ${data.code}${protectionMessage}`,
       });
+
       setTimeout(() => {
-        setUploadProgress(0);
         onUploadSuccess?.();
       }, 1000);
     },
@@ -109,14 +122,55 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
   }
 
   return (
-    <div
-      {...getRootProps()}
-      className={`bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed p-12 text-center cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 ${
-        isDragActive
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20 scale-102'
-          : 'border-gray-300 dark:border-slate-600'
-      }`}
-    >
+    <div className="space-y-6">
+      {/* Password Protection Controls */}
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg">
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="password-toggle"
+              checked={usePassword}
+              onCheckedChange={setUsePassword}
+              className="data-[state=checked]:bg-orange-600"
+            />
+            <Label htmlFor="password-toggle" className="flex items-center space-x-2 cursor-pointer">
+              <Shield className="w-4 h-4 text-orange-600" />
+              <span className="text-sm font-medium text-gray-900 dark:text-white">
+                Protect with password
+              </span>
+            </Label>
+          </div>
+        </div>
+
+        {usePassword && (
+          <div className="mt-4">
+            <div className="flex items-center space-x-3">
+              <Lock className="w-5 h-5 text-gray-500" />
+              <Input
+                type="password"
+                placeholder="Enter password for file protection"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="flex-1 bg-gray-50 dark:bg-slate-700 border-gray-300 dark:border-slate-600"
+                maxLength={50}
+              />
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 ml-8">
+              Recipients will need this password to download the file
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* File Upload Area */}
+      <div
+        {...getRootProps()}
+        className={`bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed p-12 text-center cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 ${
+          isDragActive
+            ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20 scale-102'
+            : 'border-gray-300 dark:border-slate-600'
+        }`}
+      >
       <input {...getInputProps()} />
       
       <div className="space-y-6">
@@ -142,6 +196,7 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Maximum file size: 200MB • Supported: All file types
           </p>
+        </div>
         </div>
       </div>
     </div>

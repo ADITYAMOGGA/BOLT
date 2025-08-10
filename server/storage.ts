@@ -49,6 +49,7 @@ export class MemStorage implements IStorage {
       mimeType: insertFile.mimeType,
       size: insertFile.size,
       code,
+      password: insertFile.password || null,
       downloadCount: 0,
       createdAt: now,
       expiresAt,
