@@ -124,7 +124,8 @@ export function Navigation() {
               {/* Mobile menu button */}
               <button
                 onClick={toggleMenu}
-                className="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 transition-all duration-200"
+                className="lg:hidden p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent"
+                data-testid="button-mobile-menu"
               >
                 {isMenuOpen ? (
                   <X className="w-5 h-5" />
@@ -137,30 +138,64 @@ export function Navigation() {
         </div>
       </nav>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden absolute top-16 left-0 right-0 z-40 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 shadow-lg animate-slide-up">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="space-y-2">
-              {navLinks.map((link, index) => (
-                <Link key={link.href} href={link.href}>
-                  <div 
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                      location === link.href
-                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
-                    }`}
-                    style={{ 
-                      animationDelay: `${index * 50}ms`,
-                      animation: isMenuOpen ? `slideInLeft 0.3s ease-out forwards` : 'none'
+        <div className="lg:hidden bg-card border-b border-border">
+          <div className="container mx-auto px-4 py-4 space-y-2">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href}>
+                <div 
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors cursor-pointer ${
+                    location === link.href
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                  }`}
+                >
+                  <link.icon className="w-4 h-4" />
+                  <span className="font-medium">{link.label}</span>
+                </div>
+              </Link>
+            ))}
+            
+            {/* Mobile auth section */}
+            <div className="pt-4 border-t border-border">
+              {user ? (
+                <div className="space-y-2">
+                  <div className="px-3 py-2 text-sm text-muted-foreground">
+                    Signed in as {user.username}
+                  </div>
+                  <Link href="/dashboard">
+                    <div 
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center space-x-3 px-3 py-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/50 cursor-pointer"
+                    >
+                      <User className="w-4 h-4" />
+                      <span>Dashboard</span>
+                    </div>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsMenuOpen(false);
                     }}
-                    onClick={toggleMenu}
+                    className="flex items-center space-x-3 px-3 py-2 rounded-md text-destructive hover:bg-destructive/10 cursor-pointer w-full text-left"
                   >
-                    <link.icon className="w-5 h-5" />
-                    <span className="font-medium">{link.label}</span>
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              ) : (
+                <Link href="/auth">
+                  <div 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center space-x-3 px-3 py-2 rounded-md border border-border cursor-pointer hover:bg-accent/50"
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Login</span>
                   </div>
                 </Link>
-              ))}
+              )}
             </div>
           </div>
         </div>
