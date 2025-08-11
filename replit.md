@@ -8,7 +8,7 @@ BOLT is a fast and secure file sharing application that allows users to upload f
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (August 2024)
+## Recent Changes (August 2025)
 
 ### File Sharing Implementation
 - ✅ Complete file upload/download system working
@@ -18,6 +18,17 @@ Preferred communication style: Simple, everyday language.
 - ✅ Download code input on homepage
 - ✅ Mobile-responsive hamburger menu
 - ✅ Dark/light theme toggle
+
+### User Authentication System (August 2025)
+- ✅ Supabase database integration for user management
+- ✅ Username/password authentication (no email required)
+- ✅ Secure password hashing with bcrypt
+- ✅ Login/signup modal with smooth animations
+- ✅ Auth warning for anonymous users about file persistence
+- ✅ File ownership - logged-in users can track their files
+- ✅ Anonymous file uploads still supported
+- ✅ User dropdown menu in navigation
+- ✅ Authentication state management with React Context
 
 ## System Architecture
 
