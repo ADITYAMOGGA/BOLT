@@ -26,37 +26,37 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 sticky top-0 z-50 transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="bg-card border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-card/80">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/">
-              <div className="flex items-center space-x-3 cursor-pointer">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-white" />
+              <div className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <Zap className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">BOLT</h1>
+                <h1 className="text-xl font-bold text-foreground">BOLT</h1>
               </div>
             </Link>
             
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-6">
+            <div className="hidden lg:flex items-center space-x-1">
               {navLinks.map((link) => (
                 <Link key={link.href} href={link.href}>
-                  <span className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer ${
+                  <span className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer text-sm font-medium ${
                     location === link.href
-                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
                   }`}>
                     <link.icon className="w-4 h-4" />
-                    <span className="font-medium">{link.label}</span>
+                    <span>{link.label}</span>
                   </span>
                 </Link>
               ))}
             </div>
             
             {/* Right side buttons */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               {/* Authentication */}
               {user ? (
                 <DropdownMenu>
@@ -64,7 +64,7 @@ export function Navigation() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                      className="flex items-center space-x-2"
                       data-testid="button-user-menu"
                     >
                       <User className="w-4 h-4" />
@@ -72,7 +72,7 @@ export function Navigation() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem disabled className="text-sm text-gray-500">
+                    <DropdownMenuItem disabled className="text-sm text-muted-foreground">
                       Signed in as {user.username}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -84,7 +84,7 @@ export function Navigation() {
                     </Link>
                     <DropdownMenuItem 
                       onClick={logout}
-                      className="text-red-600 cursor-pointer"
+                      className="text-destructive cursor-pointer"
                       data-testid="button-logout"
                     >
                       <LogOut className="w-4 h-4 mr-2" />
@@ -111,13 +111,13 @@ export function Navigation() {
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 transition-all duration-300"
+                className="w-9 h-9 p-0"
                 data-testid="button-theme-toggle"
               >
                 {theme === 'light' ? (
-                  <Moon className="w-5 h-5" />
+                  <Moon className="w-4 h-4" />
                 ) : (
-                  <Sun className="w-5 h-5" />
+                  <Sun className="w-4 h-4" />
                 )}
               </Button>
               

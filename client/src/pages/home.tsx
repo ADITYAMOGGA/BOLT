@@ -54,162 +54,109 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-all duration-300">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Main Grid Layout */}
-      <div className="min-h-[calc(100vh-4rem)] grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-8 py-8">
-        {/* Grid Background Pattern */}
-        <div className="fixed inset-0 opacity-5 pointer-events-none">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `
-              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px'
-          }}></div>
+      {/* Main Content */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold text-foreground mb-3">Secure File Sharing</h1>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Upload files up to 200MB and share them securely with unique codes. Files auto-delete after 24 hours.
+          </p>
         </div>
 
-        {/* Left Section - Hero Content */}
-        <div className="lg:col-span-5 flex flex-col justify-start pt-8 lg:pt-16 space-y-8 relative z-10">
-          {/* Brand and Title */}
-          <div className="space-y-6">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-xl">⚡</span>
-              </div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">BOLT</h1>
-            </div>
-            
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
-              Share Files{' '}
-              <span className="bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">
-                Instantly
-              </span>
-            </h2>
-            
-            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed max-w-lg">
-              Upload, generate a secure link, and share files up to 200MB. No registration required. Fast, secure, and simple.
-            </p>
-            
-            {/* Feature Highlights */}
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900 rounded-lg flex items-center justify-center">
-                  <Shield className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                </div>
-                <span className="text-gray-700 dark:text-gray-300 font-medium">Secure & Encrypted</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                  <Rocket className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-                <span className="text-gray-700 dark:text-gray-300 font-medium">24H Auto-Delete</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
-                  <Users className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                </div>
-                <span className="text-gray-700 dark:text-gray-300 font-medium">No Registration Required</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Section - Upload and Download */}
-        <div className="lg:col-span-7 flex flex-col justify-start pt-8 lg:pt-16 space-y-8 relative z-10">
-          {/* Authentication Warning */}
-          <div className="mb-6">
-            <AuthWarning />
-          </div>
-
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Upload Section */}
-          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-200/50 dark:border-slate-700/50 p-8">
-            <div className="mb-6">
-              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2 flex items-center">
-                <CloudUpload className="w-6 h-6 mr-3 text-blue-600" />
-                Upload Files
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Drag and drop files or click to select. Up to 200MB per file.
-              </p>
+          <div className="space-y-6">
+            <div className="bg-card rounded-lg border shadow-sm p-6">
+              <div className="flex items-center mb-4">
+                <CloudUpload className="w-5 h-5 text-primary mr-2" />
+                <h2 className="text-xl font-semibold">Upload File</h2>
+              </div>
+              <AuthWarning />
+              <FileUpload onUploadSuccess={handleUploadSuccess} />
             </div>
-            <FileUpload onUploadSuccess={handleUploadSuccess} />
           </div>
 
           {/* Download Section */}
-          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-200/50 dark:border-slate-700/50 p-8">
-            <div className="mb-6">
-              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2 flex items-center">
-                <Download className="w-6 h-6 mr-3 text-emerald-600" />
-                Download Files
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Enter a 6-character sharing code to download files
-              </p>
-            </div>
-
-            <form onSubmit={handleDownloadSubmit} className="space-y-4">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
+          <div className="space-y-6">
+            <div className="bg-card rounded-lg border shadow-sm p-6">
+              <div className="flex items-center mb-4">
+                <Download className="w-5 h-5 text-primary mr-2" />
+                <h2 className="text-xl font-semibold">Download File</h2>
+              </div>
+              <form onSubmit={handleDownloadSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="download-code" className="text-sm font-medium text-foreground block mb-2">
+                    Enter sharing code
+                  </label>
                   <Input
+                    id="download-code"
                     type="text"
-                    placeholder="Enter sharing code (e.g., ABC123)"
+                    placeholder="e.g. ABC123"
                     value={downloadCode}
-                    onChange={(e) => setDownloadCode(e.target.value)}
+                    onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
                     maxLength={6}
-                    className="h-12 text-lg text-center font-mono uppercase tracking-wider bg-gray-50 dark:bg-slate-700 border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 rounded-xl"
+                    className="text-center text-lg font-mono tracking-wider"
                   />
                 </div>
-                <Button 
-                  type="submit"
-                  className="h-12 px-8 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
-                >
-                  <Download className="w-5 h-5 mr-2" />
-                  Download
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                <Button type="submit" className="w-full" size="lg">
+                  <Download className="w-4 h-4 mr-2" />
+                  Download File
                 </Button>
+              </form>
+            </div>
+
+            {/* Quick Features */}
+            <div className="bg-card rounded-lg border shadow-sm p-6">
+              <h3 className="font-semibold mb-4">Features</h3>
+              <div className="space-y-3">
+                <div className="flex items-center text-sm">
+                  <Shield className="w-4 h-4 text-green-600 mr-3" />
+                  <span>Secure cloud storage</span>
+                </div>
+                <div className="flex items-center text-sm">
+                  <Rocket className="w-4 h-4 text-blue-600 mr-3" />
+                  <span>24-hour auto-deletion</span>
+                </div>
+                <div className="flex items-center text-sm">
+                  <Users className="w-4 h-4 text-purple-600 mr-3" />
+                  <span>No account required</span>
+                </div>
               </div>
-              
-              <div className="text-center">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Codes are case-insensitive and expire after 24 hours
-                </p>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* File Manager - Full Width Below Main Content */}
-      {showFileManager && (
-        <div className="px-4 sm:px-6 lg:px-8 py-8 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto">
-            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-200/50 dark:border-slate-700/50 p-8">
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-                Your Files
-              </h3>
+        {/* File Manager - Show below if files exist */}
+        {showFileManager && (
+          <div className="mt-12" id="file-manager">
+            <div className="bg-card rounded-lg border shadow-sm p-6">
+              <h3 className="text-xl font-semibold mb-6">Your Files</h3>
               
               {isLoading ? (
                 <div className="text-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                  <p className="text-gray-600 dark:text-gray-300 mt-4">Loading files...</p>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                  <p className="text-muted-foreground mt-4">Loading files...</p>
                 </div>
               ) : files.length > 0 ? (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {files.map((file: any) => (
                     <FileCard key={file.id} file={file} />
                   ))}
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <p className="text-gray-600 dark:text-gray-300">No files uploaded yet.</p>
+                  <p className="text-muted-foreground">No files uploaded yet.</p>
                 </div>
               )}
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
