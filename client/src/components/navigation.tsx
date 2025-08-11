@@ -14,6 +14,7 @@ export function Navigation() {
 
   const navLinks = [
     { href: '/', label: 'Home', icon: Home },
+    ...(user ? [{ href: '/dashboard', label: 'Dashboard', icon: User }] : []),
     { href: '/about', label: 'About', icon: Info },
     { href: '/privacy', label: 'Privacy', icon: Shield },
     { href: '/help', label: 'Help', icon: HelpCircle },
@@ -75,6 +76,12 @@ export function Navigation() {
                       Signed in as {user.username}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
+                    <Link href="/dashboard">
+                      <DropdownMenuItem className="cursor-pointer" data-testid="menu-dashboard">
+                        <User className="w-4 h-4 mr-2" />
+                        Dashboard
+                      </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuItem 
                       onClick={logout}
                       className="text-red-600 cursor-pointer"

@@ -77,6 +77,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid username or password" });
       }
 
+      // Store user ID in session
+      (req as any).session.userId = user.id;
+
       // Return user data (excluding password hash)
       res.json({
         id: user.id,
@@ -86,6 +89,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // Get user files
+  app.get("/api/files/user", async (req, res) => {
+    try {
+      const userId = (req as any).session?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const files = await storage.getUserFiles(userId);
+      res.json(files);
+    } catch (error) {
+      console.error("Error fetching user files:", error);
+      res.status(500).json({ message: "Failed to fetch files" });
     }
   });
 
