@@ -52,3 +52,13 @@ CREATE POLICY "Users can update their own files" ON files
 
 CREATE POLICY "Users can delete their own files" ON files
     FOR DELETE USING (user_id IS NULL OR auth.uid()::text = user_id::text);
+
+-- Create function to increment download count
+CREATE OR REPLACE FUNCTION increment_download_count(file_id UUID)
+RETURNS VOID AS $$
+BEGIN
+    UPDATE files 
+    SET download_count = download_count + 1 
+    WHERE id = file_id;
+END;
+$$ LANGUAGE plpgsql;

@@ -1,8 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
 import { insertFileSchema, insertUserSchema, loginUserSchema } from "@shared/schema";
-import { supabaseUserStorage } from "./supabase";
+import { supabaseStorage } from "./supabase";
 import multer from "multer";
 import path from "path";
 import { randomUUID } from "crypto";
@@ -39,7 +38,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if user already exists
-      const existingUser = await supabaseUserStorage.getUserByUsername(username);
+      const existingUser = await supabaseStorage.getUserByUsername(username);
       if (existingUser) {
         return res.status(409).json({ message: "Username already exists" });
       }
@@ -48,7 +47,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const passwordHash = await bcrypt.hash(password, 10);
 
       // Create user in Supabase
-      await supabaseUserStorage.createUser(username, passwordHash);
+      await supabaseStorage.createUser({ username, password, passwordHash });
 
       res.status(201).json({ message: "Account created successfully! Please login." });
     } catch (error) {
@@ -66,13 +65,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get user from Supabase
-      const user = await supabaseUserStorage.getUserByUsername(username);
+      const user = await supabaseStorage.getUserByUsername(username);
       if (!user) {
         return res.status(401).json({ message: "Invalid username or password" });
       }
 
       // Verify password
-      const isValid = await bcrypt.compare(password, user.password_hash);
+      const isValid = await bcrypt.compare(password, user.passwordHash);
       if (!isValid) {
         return res.status(401).json({ message: "Invalid username or password" });
       }
@@ -84,11 +83,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({
         id: user.id,
         username: user.username,
-        createdAt: user.created_at,
+        createdAt: user.createdAt,
       });
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // Logout route
+  app.post("/api/auth/logout", (req, res) => {
+    (req as any).session.destroy((err: any) => {
+      if (err) {
+        console.error("Logout error:", err);
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+
+  // Check auth status
+  app.get("/api/auth/me", async (req, res) => {
+    try {
+      const userId = (req as any).session?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const user = await supabaseStorage.getUserById(userId);
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
+      }
+
+      res.json({
+        id: user.id,
+        username: user.username,
+        createdAt: user.createdAt,
+      });
+    } catch (error) {
+      console.error("Auth check error:", error);
+      res.status(500).json({ message: "Auth check failed" });
     }
   });
 
@@ -100,7 +134,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const files = await storage.getUserFiles(userId);
+      const files = await supabaseStorage.getUserFiles(userId);
       res.json(files);
     } catch (error) {
       console.error("Error fetching user files:", error);
@@ -124,8 +158,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.body.userId || null, // Optional user ID for logged in users
       };
 
-      const file = await storage.createFile(fileData);
-      storage.setFilePath(file.id, req.file.path);
+      const file = await supabaseStorage.createFile(fileData);
+      supabaseStorage.setFilePath(file.id, req.file.path);
 
       res.json({
         id: file.id,
@@ -147,7 +181,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/file/:code", async (req, res) => {
     try {
       const { code } = req.params;
-      const file = await storage.getFileByCode(code);
+      const file = await supabaseStorage.getFileByCode(code);
       
       if (!file) {
         return res.status(404).json({ message: "File not found or expired" });
@@ -174,7 +208,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { code } = req.params;
       const { password } = req.body;
-      const file = await storage.getFileByCode(code);
+      const file = await supabaseStorage.getFileByCode(code);
       
       if (!file) {
         return res.status(404).json({ message: "File not found or expired" });
@@ -185,12 +219,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid password" });
       }
 
-      const filePath = storage.getFilePath(file.id);
+      const filePath = supabaseStorage.getFilePath(file.id);
       if (!filePath) {
         return res.status(404).json({ message: "File data not found" });
       }
 
-      await storage.incrementDownloadCount(file.id);
+      await supabaseStorage.incrementDownloadCount(file.id);
 
       res.setHeader('Content-Disposition', `attachment; filename="${file.originalName}"`);
       res.setHeader('Content-Type', file.mimeType);
@@ -209,10 +243,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let files;
       if (userId) {
         // Get files for specific user
-        files = await storage.getUserFiles(userId);
+        files = await supabaseStorage.getUserFiles(userId);
       } else {
         // Get all active files (admin view or anonymous files)
-        files = await storage.getActiveFiles();
+        files = await supabaseStorage.getActiveFiles();
       }
       
       const fileList = files.map(file => ({
@@ -238,7 +272,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/file/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      await storage.deleteFile(id);
+      await supabaseStorage.deleteFile(id);
       res.json({ message: "File deleted successfully" });
     } catch (error) {
       console.error("Delete error:", error);
