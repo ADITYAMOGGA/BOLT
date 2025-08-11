@@ -21,22 +21,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored user data on mount
-    const storedUser = localStorage.getItem('bolt_user');
-    if (storedUser) {
+    // Check authentication status with server
+    const checkAuthStatus = async () => {
       try {
-        setUser(JSON.parse(storedUser));
+        const response = await fetch('/api/auth/me', {
+          credentials: 'include'
+        });
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+          localStorage.setItem('bolt_user', JSON.stringify(userData));
+        } else {
+          // If server says not authenticated, clear local storage
+          setUser(null);
+          localStorage.removeItem('bolt_user');
+        }
       } catch (error) {
-        localStorage.removeItem('bolt_user');
+        // If there's an error checking auth, try using stored data as fallback
+        const storedUser = localStorage.getItem('bolt_user');
+        if (storedUser) {
+          try {
+            setUser(JSON.parse(storedUser));
+          } catch (parseError) {
+            localStorage.removeItem('bolt_user');
+          }
+        }
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+
+    checkAuthStatus();
   }, []);
 
   const login = async (username: string, password: string) => {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ username, password }),
     });
 
@@ -66,7 +87,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return result;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await fetch('/api/auth/logout', { 
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.log('Logout request failed, but clearing local session');
+    }
     setUser(null);
     localStorage.removeItem('bolt_user');
   };
