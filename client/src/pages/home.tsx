@@ -71,7 +71,7 @@ export default function Home() {
         </div>
 
         {/* Left Section - Hero Content */}
-        <div className="lg:col-span-5 flex flex-col justify-center space-y-8 relative z-10">
+        <div className="lg:col-span-5 flex flex-col justify-start pt-8 lg:pt-16 space-y-8 relative z-10">
           {/* Brand and Title */}
           <div className="space-y-6">
             <div className="flex items-center space-x-3 mb-6">
@@ -117,7 +117,7 @@ export default function Home() {
         </div>
 
         {/* Right Section - Upload and Download */}
-        <div className="lg:col-span-7 flex flex-col justify-center space-y-8 relative z-10">
+        <div className="lg:col-span-7 flex flex-col justify-start pt-8 lg:pt-16 space-y-8 relative z-10">
           {/* Authentication Warning */}
           <div className="mb-6">
             <AuthWarning />
