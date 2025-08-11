@@ -193,7 +193,7 @@ export class SupabaseStorage implements IStorage {
     }));
   }
 
-  async getUserFiles(userId: string): Promise<File[]> {
+  async getUserFiles(userId: string): Promise<any[]> {
     const { data, error } = await supabase
       .from('files')
       .select('*')
@@ -203,18 +203,17 @@ export class SupabaseStorage implements IStorage {
 
     if (error) throw error;
 
+    // Return data in the format expected by the frontend
     return data.map(file => ({
       id: file.id,
       filename: file.filename,
-      originalName: file.original_name,
-      mimeType: file.mime_type,
+      original_name: file.original_name,
+      mime_type: file.mime_type,
       size: file.size,
       code: file.code,
-      password: file.password,
-      downloadCount: file.download_count,
-      userId: file.user_id,
-      createdAt: new Date(file.created_at),
-      expiresAt: new Date(file.expires_at),
+      download_count: file.download_count,
+      created_at: file.created_at,
+      expires_at: file.expires_at,
     }));
   }
 

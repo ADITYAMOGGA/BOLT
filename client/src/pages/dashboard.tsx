@@ -86,7 +86,8 @@ export default function Dashboard() {
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   };
 
-  const getFileIcon = (mimeType: string) => {
+  const getFileIcon = (mimeType: string | null | undefined) => {
+    if (!mimeType) return <FileText className="w-4 h-4" />;
     if (mimeType.startsWith('image/')) return <Image className="w-4 h-4" />;
     if (mimeType.startsWith('video/')) return <Video className="w-4 h-4" />;
     if (mimeType.startsWith('audio/')) return <Music className="w-4 h-4" />;
@@ -94,7 +95,8 @@ export default function Dashboard() {
     return <FileText className="w-4 h-4" />;
   };
 
-  const getFileTypeColor = (mimeType: string) => {
+  const getFileTypeColor = (mimeType: string | null | undefined) => {
+    if (!mimeType) return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
     if (mimeType.startsWith('image/')) return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
     if (mimeType.startsWith('video/')) return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300';
     if (mimeType.startsWith('audio/')) return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
@@ -360,7 +362,7 @@ export default function Dashboard() {
                         
                         <div className="flex items-center gap-3">
                           <Badge className={getFileTypeColor(file.mime_type)}>
-                            {file.mime_type.split('/')[0]}
+                            {file.mime_type ? file.mime_type.split('/')[0] : 'unknown'}
                           </Badge>
                           
                           <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
