@@ -178,12 +178,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         id: file.id,
-        originalName: file.originalName,
+        original_name: file.originalName,
         code: file.code,
         size: file.size,
-        mimeType: file.mimeType,
-        expiresAt: file.expiresAt,
-        downloadCount: file.downloadCount,
+        mime_type: file.mimeType,
+        expires_at: file.expiresAt,
+        download_count: file.downloadCount,
         hasPassword: !!file.password,
       });
     } catch (error) {
@@ -204,12 +204,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         id: file.id,
-        originalName: file.originalName,
+        original_name: file.originalName,
         code: file.code,
         size: file.size,
-        mimeType: file.mimeType,
-        expiresAt: file.expiresAt,
-        downloadCount: file.downloadCount,
+        mime_type: file.mimeType,
+        expires_at: file.expiresAt,
+        download_count: file.downloadCount,
         hasPassword: !!file.password,
       });
     } catch (error) {
@@ -271,12 +271,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const fileList = files.map(file => ({
         id: file.id,
-        originalName: file.originalName,
+        original_name: file.originalName || file.original_name,
         code: file.code,
         size: file.size,
-        mimeType: file.mimeType,
-        expiresAt: file.expiresAt,
-        downloadCount: file.downloadCount,
+        mime_type: file.mimeType || file.mime_type,
+        expires_at: file.expiresAt || file.expires_at,
+        download_count: file.downloadCount || file.download_count,
+        created_at: file.createdAt || file.created_at,
         hasPassword: !!file.password,
         isOwned: !!file.userId,
       }));

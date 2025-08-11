@@ -19,13 +19,7 @@ export default function Home() {
   const { toast } = useToast();
 
   const { data: files = [], isLoading } = useQuery<any[]>({
-    queryKey: user ? ['/api/files', user.id] : ['/api/files'],
-    queryFn: async () => {
-      const url = user ? `/api/files?userId=${user.id}` : '/api/files';
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Failed to fetch files');
-      return response.json();
-    },
+    queryKey: ['/api/files'],
     enabled: showFileManager,
   });
 
