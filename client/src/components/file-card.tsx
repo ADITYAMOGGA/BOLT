@@ -59,7 +59,8 @@ export function FileCard({ file }: FileCardProps) {
     },
   });
 
-  const getFileIcon = (mimeType: string) => {
+  const getFileIcon = (mimeType: string | null | undefined) => {
+    if (!mimeType) return <FileIcon className="w-6 h-6" />;
     if (mimeType.startsWith('image/')) return <Image className="w-6 h-6" />;
     if (mimeType.startsWith('video/')) return <Film className="w-6 h-6" />;
     if (mimeType.startsWith('audio/')) return <Music className="w-6 h-6" />;
@@ -68,7 +69,8 @@ export function FileCard({ file }: FileCardProps) {
     return <FileIcon className="w-6 h-6" />;
   };
 
-  const getIconColor = (mimeType: string) => {
+  const getIconColor = (mimeType: string | null | undefined) => {
+    if (!mimeType) return 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900';
     if (mimeType.startsWith('image/')) return 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900';
     if (mimeType.startsWith('video/')) return 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900';
     if (mimeType.startsWith('audio/')) return 'text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900';
@@ -126,8 +128,8 @@ export function FileCard({ file }: FileCardProps) {
     <Card className="bg-white dark:bg-slate-800 shadow-lg transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl">
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
-          <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getIconColor(file.mimeType)}`}>
-            {getFileIcon(file.mimeType)}
+          <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getIconColor(file.mime_type || file.mimeType)}`}>
+            {getFileIcon(file.mime_type || file.mimeType)}
           </div>
           <div className="flex space-x-2">
             {file.hasPassword && (
@@ -142,11 +144,11 @@ export function FileCard({ file }: FileCardProps) {
           </div>
         </div>
         
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-2 truncate" title={file.originalName}>
-          {file.originalName}
+        <h4 className="font-semibold text-gray-900 dark:text-white mb-2 truncate" title={file.original_name || file.originalName}>
+          {file.original_name || file.originalName}
         </h4>
         <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-          {formatFileSize(file.size)} • Expires in {getTimeLeft(file.expiresAt)}
+          {formatFileSize(file.size)} • Expires in {getTimeLeft(file.expires_at || file.expiresAt)}
         </p>
         
         <div className="space-y-3">
