@@ -30,9 +30,7 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
       if (usePassword && password) {
         formData.append('password', password);
       }
-      if (user) {
-        formData.append('userId', user.id);
-      }
+      // User ID is now automatically retrieved from session on the server
 
       // Simulate progress for better UX
       const progressInterval = setInterval(() => {
@@ -67,6 +65,10 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
       setPassword('');
       setUsePassword(false);
       queryClient.invalidateQueries({ queryKey: ['/api/files'] });
+      // Also invalidate user files if logged in
+      if (user) {
+        queryClient.invalidateQueries({ queryKey: ['/api/files/user'] });
+      }
       
       const protectionMessage = data.hasPassword ? " (Password protected)" : "";
       toast({

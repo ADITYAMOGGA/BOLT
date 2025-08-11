@@ -149,13 +149,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file provided" });
       }
 
+      // Get user ID from session if logged in
+      const userId = (req as any).session?.userId || null;
+
       const fileData = {
         originalName: req.file.originalname,
         mimeType: req.file.mimetype,
         size: req.file.size,
         filename: req.file.filename,
         password: req.body.password || null,
-        userId: req.body.userId || null, // Optional user ID for logged in users
+        userId: userId, // Use session user ID for logged in users
       };
 
       const file = await supabaseStorage.createFile(fileData);
