@@ -67,7 +67,143 @@ export function AuthModal({ trigger, defaultTab = 'login', isOpen, onOpenChange 
     }
   };
 
-  const modalContent = (
+  if (trigger) {
+    return (
+      <Dialog>
+        <DialogTrigger asChild>
+          {trigger}
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <User className="w-5 h-5" />
+              Account Access
+            </DialogTitle>
+          </DialogHeader>
+
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'login' | 'signup')}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="login" className="flex items-center gap-2">
+                <LogIn className="w-4 h-4" />
+                Login
+              </TabsTrigger>
+              <TabsTrigger value="signup" className="flex items-center gap-2">
+                <UserPlus className="w-4 h-4" />
+                Sign Up
+              </TabsTrigger>
+            </TabsList>
+
+            {error && (
+              <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <TabsContent value="login" className="space-y-4 mt-4">
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter your username" 
+                            data-testid="input-username"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="password" 
+                            placeholder="Enter your password"
+                            data-testid="input-password"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={isLoading}
+                    data-testid="button-login"
+                  >
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Login
+                  </Button>
+                </TabsContent>
+
+                <TabsContent value="signup" className="space-y-4 mt-4">
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Choose a username" 
+                            data-testid="input-signup-username"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="password" 
+                            placeholder="Choose a password"
+                            data-testid="input-signup-password"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={isLoading}
+                    data-testid="button-signup"
+                  >
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Create Account
+                  </Button>
+                </TabsContent>
+              </form>
+            </Form>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
@@ -197,17 +333,4 @@ export function AuthModal({ trigger, defaultTab = 'login', isOpen, onOpenChange 
       </DialogContent>
     </Dialog>
   );
-
-  if (trigger) {
-    return (
-      <Dialog>
-        <DialogTrigger asChild>
-          {trigger}
-        </DialogTrigger>
-        {modalContent}
-      </Dialog>
-    );
-  }
-
-  return modalContent;
 }
