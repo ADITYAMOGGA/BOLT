@@ -2,16 +2,14 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { AuthModal } from '@/components/auth-modal';
 import { AlertTriangle, User, UserPlus, X } from 'lucide-react';
+import { Link } from 'wouter';
 
 export function AuthWarning() {
   const { user } = useAuth();
   const [isDismissed, setIsDismissed] = useState(() => {
     return localStorage.getItem('bolt_auth_warning_dismissed') === 'true';
   });
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalTab, setModalTab] = useState<'login' | 'signup'>('login');
 
   const handleDismiss = () => {
     setIsDismissed(true);
@@ -23,10 +21,7 @@ export function AuthWarning() {
     return null;
   }
 
-  const openModal = (tab: 'login' | 'signup') => {
-    setModalTab(tab);
-    setIsModalOpen(true);
-  };
+
 
   return (
     <>
@@ -43,25 +38,27 @@ export function AuthWarning() {
             </span>
           </div>
           <div className="flex items-center gap-2 ml-4">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => openModal('login')}
-              className="border-orange-200 text-orange-700 hover:bg-orange-100 dark:border-orange-700 dark:text-orange-300 dark:hover:bg-orange-900"
-              data-testid="button-login-warning"
-            >
-              <User className="w-4 h-4 mr-1" />
-              Login
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => openModal('signup')}
-              className="bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-600 dark:hover:bg-orange-700"
-              data-testid="button-signup-warning"
-            >
-              <UserPlus className="w-4 h-4 mr-1" />
-              Sign Up
-            </Button>
+            <Link href="/auth">
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-orange-200 text-orange-700 hover:bg-orange-100 dark:border-orange-700 dark:text-orange-300 dark:hover:bg-orange-900"
+                data-testid="button-login-warning"
+              >
+                <User className="w-4 h-4 mr-1" />
+                Login
+              </Button>
+            </Link>
+            <Link href="/auth">
+              <Button
+                size="sm"
+                className="bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-600 dark:hover:bg-orange-700"
+                data-testid="button-signup-warning"
+              >
+                <UserPlus className="w-4 h-4 mr-1" />
+                Sign Up
+              </Button>
+            </Link>
             <Button
               size="sm"
               variant="ghost"
@@ -75,11 +72,7 @@ export function AuthWarning() {
         </AlertDescription>
       </Alert>
 
-      <AuthModal
-        defaultTab={modalTab}
-        isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
-      />
+
     </>
   );
 }

@@ -3,7 +3,6 @@ import { useTheme } from './theme-provider';
 import { useAuth } from '@/contexts/auth-context';
 import { Sun, Moon, Zap, Menu, X, Home, Info, Shield, HelpCircle, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { AuthModal } from '@/components/auth-modal';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Link, useLocation } from 'wouter';
 
@@ -87,19 +86,17 @@ export function Navigation() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <AuthModal
-                  trigger={
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="flex items-center space-x-2"
-                      data-testid="button-login-nav"
-                    >
-                      <User className="w-4 h-4" />
-                      <span className="hidden sm:inline">Login</span>
-                    </Button>
-                  }
-                />
+                <Link href="/auth">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex items-center space-x-2"
+                    data-testid="button-login-nav"
+                  >
+                    <User className="w-4 h-4" />
+                    <span className="hidden sm:inline">Login</span>
+                  </Button>
+                </Link>
               )}
               
               {/* Theme toggle */}
