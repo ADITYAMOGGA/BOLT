@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useToast } from '@/hooks/use-toast';
 import { FileCard } from '@/components/file-card';
 import { Navigation } from '@/components/navigation';
 import { 
@@ -56,6 +57,7 @@ export default function Dashboard() {
   const { user, logout } = useAuth();
   const [, navigate] = useLocation();
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const { toast } = useToast();
 
   // Redirect if not logged in
   useEffect(() => {
@@ -105,8 +107,36 @@ export default function Dashboard() {
   };
 
   const handleDeleteFiles = async () => {
-    // Implementation for bulk delete
-    console.log('Delete files:', selectedFiles);
+    if (selectedFiles.length === 0) return;
+    
+    try {
+      // Delete each selected file
+      for (const fileId of selectedFiles) {
+        const response = await fetch(`/api/file/${fileId}`, {
+          method: 'DELETE',
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to delete file: ${response.statusText}`);
+        }
+      }
+      
+      // Clear selection and refresh file list
+      setSelectedFiles([]);
+      refetchFiles();
+      
+      toast({
+        title: "Files deleted",
+        description: `Successfully deleted ${selectedFiles.length} file(s)`,
+      });
+    } catch (error) {
+      console.error('Error deleting files:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete some files. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSelectAll = () => {
