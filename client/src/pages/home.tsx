@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
+import { useAuth } from '@/contexts/auth-context';
 import { Navigation } from '@/components/navigation';
 import { FileUpload } from '@/components/file-upload';
 import { FileCard } from '@/components/file-card';
+import { AuthWarning } from '@/components/auth-warning';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Rocket, Shield, Users, Download, ArrowRight } from 'lucide-react';
@@ -13,10 +15,17 @@ export default function Home() {
   const [showFileManager, setShowFileManager] = useState(false);
   const [downloadCode, setDownloadCode] = useState('');
   const [, navigate] = useLocation();
+  const { user } = useAuth();
   const { toast } = useToast();
 
   const { data: files = [], isLoading } = useQuery<any[]>({
-    queryKey: ['/api/files'],
+    queryKey: user ? ['/api/files', user.id] : ['/api/files'],
+    queryFn: async () => {
+      const url = user ? `/api/files?userId=${user.id}` : '/api/files';
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch files');
+      return response.json();
+    },
     enabled: showFileManager,
   });
 
@@ -78,6 +87,11 @@ export default function Home() {
                 <span className="font-medium">Up to 200MB</span>
               </div>
             </div>
+          </div>
+
+          {/* Authentication Warning */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <AuthWarning />
           </div>
 
           {/* Upload Zone */}

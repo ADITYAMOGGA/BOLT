@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/contexts/auth-context';
 import { apiRequest } from '@/lib/queryClient';
 import { CloudUpload, Plus, Loader2, Lock, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [usePassword, setUsePassword] = useState(false);
   const [password, setPassword] = useState('');
+  const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -27,6 +29,9 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
       formData.append('file', file);
       if (usePassword && password) {
         formData.append('password', password);
+      }
+      if (user) {
+        formData.append('userId', user.id);
       }
 
       // Simulate progress for better UX

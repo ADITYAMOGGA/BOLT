@@ -1,24 +1,33 @@
-import { type File, type InsertFile } from "@shared/schema";
+import { type File, type InsertFile, type User, type InsertUser } from "@shared/schema";
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
 import path from "path";
 
 export interface IStorage {
+  // File operations
   createFile(file: InsertFile & { filename: string }): Promise<File>;
   getFileByCode(code: string): Promise<File | undefined>;
   getFileById(id: string): Promise<File | undefined>;
   incrementDownloadCount(id: string): Promise<void>;
   deleteFile(id: string): Promise<void>;
   getActiveFiles(): Promise<File[]>;
+  getUserFiles(userId: string): Promise<File[]>;
   cleanupExpiredFiles(): Promise<void>;
+  
+  // User operations
+  createUser(user: InsertUser & { passwordHash: string }): Promise<User>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserById(id: string): Promise<User | undefined>;
 }
 
 export class MemStorage implements IStorage {
   private files: Map<string, File>;
+  private users: Map<string, User>;
   private uploads: Map<string, string>; // Maps file id to file path
 
   constructor() {
     this.files = new Map();
+    this.users = new Map();
     this.uploads = new Map();
     
     // Cleanup expired files every hour
@@ -51,6 +60,7 @@ export class MemStorage implements IStorage {
       code,
       password: insertFile.password || null,
       downloadCount: 0,
+      userId: insertFile.userId || null,
       createdAt: now,
       expiresAt,
     };
@@ -112,6 +122,37 @@ export class MemStorage implements IStorage {
 
   getFilePath(id: string): string | undefined {
     return this.uploads.get(id);
+  }
+
+  async getUserFiles(userId: string): Promise<File[]> {
+    const now = new Date();
+    return Array.from(this.files.values()).filter(file => 
+      file.userId === userId && file.expiresAt > now
+    );
+  }
+
+  // User operations
+  async createUser(insertUser: InsertUser & { passwordHash: string }): Promise<User> {
+    const id = randomUUID();
+    const now = new Date();
+
+    const user: User = {
+      id,
+      username: insertUser.username,
+      passwordHash: insertUser.passwordHash,
+      createdAt: now,
+    };
+
+    this.users.set(id, user);
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(user => user.username === username);
+  }
+
+  async getUserById(id: string): Promise<User | undefined> {
+    return this.users.get(id);
   }
 }
 

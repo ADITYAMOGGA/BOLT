@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { useTheme } from './theme-provider';
-import { Sun, Moon, Zap, Menu, X, Home, Info, Shield, HelpCircle } from 'lucide-react';
+import { useAuth } from '@/contexts/auth-context';
+import { Sun, Moon, Zap, Menu, X, Home, Info, Shield, HelpCircle, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AuthModal } from '@/components/auth-modal';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Link, useLocation } from 'wouter';
 
 export function Navigation() {
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [location] = useLocation();
 
@@ -53,12 +57,58 @@ export function Navigation() {
             
             {/* Right side buttons */}
             <div className="flex items-center space-x-4">
+              {/* Authentication */}
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                      data-testid="button-user-menu"
+                    >
+                      <User className="w-4 h-4" />
+                      <span className="hidden sm:inline font-medium">{user.username}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem disabled className="text-sm text-gray-500">
+                      Signed in as {user.username}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      onClick={logout}
+                      className="text-red-600 cursor-pointer"
+                      data-testid="button-logout"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <AuthModal
+                  trigger={
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex items-center space-x-2"
+                      data-testid="button-login-nav"
+                    >
+                      <User className="w-4 h-4" />
+                      <span className="hidden sm:inline">Login</span>
+                    </Button>
+                  }
+                />
+              )}
+              
               {/* Theme toggle */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 transition-all duration-300"
+                data-testid="button-theme-toggle"
               >
                 {theme === 'light' ? (
                   <Moon className="w-5 h-5" />
