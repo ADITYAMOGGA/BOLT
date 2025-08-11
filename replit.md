@@ -13,6 +13,7 @@ Preferred communication style: Simple, everyday language.
 ### Migration to Replit Environment (August 2025)
 - ✅ Migrated from Replit Agent to standard Replit environment
 - ✅ Converted to Supabase-only storage (removed in-memory storage)
+- ✅ **Major: Migrated from local file storage to Cloudinary cloud storage**
 - ✅ Added session management with express-session middleware
 - ✅ Fixed all authentication routes for Supabase integration
 - ✅ Professional homepage redesign with grid layout
@@ -21,6 +22,7 @@ Preferred communication style: Simple, everyday language.
 - ✅ Grid background pattern and glassmorphism effects
 - ✅ Enhanced visual hierarchy and spacing
 - ✅ Optimized content positioning - moved heading section upwards for better visibility
+- ✅ Fixed file upload authentication to properly link files to logged-in users
 
 ### File Sharing Implementation
 - ✅ Complete file upload/download system working
@@ -67,7 +69,8 @@ The server follows a REST API pattern built with Express.js:
 **Database**: PostgreSQL with Drizzle ORM for type-safe database operations
 - **Schema**: Single `files` table with metadata including filename, MIME type, size, unique codes, and expiration timestamps
 - **Migration System**: Drizzle Kit for schema migrations and database management
-- **File Storage**: Local file system storage in `uploads` directory with UUID-based filenames
+- **File Storage**: Cloudinary cloud storage with secure URLs and automatic CDN delivery
+- **File Management**: Cloudinary public IDs stored in database for file tracking and deletion
 
 ### Authentication and Authorization
 The application uses a code-based access system:
@@ -89,6 +92,7 @@ The application uses a code-based access system:
 - **drizzle-orm**: Type-safe ORM for PostgreSQL with TypeScript integration
 - **express**: Web application framework for Node.js backend
 - **multer**: File upload middleware for handling multipart forms
+- **cloudinary**: Cloud storage service for secure file hosting and CDN delivery
 
 ### Frontend UI Dependencies
 - **@radix-ui/***: Comprehensive set of accessible UI primitives (accordion, dialog, dropdown, etc.)

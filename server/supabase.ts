@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { type IStorage } from './storage';
 import { type File, type InsertFile, type User, type InsertUser } from '@shared/schema';
 import { randomUUID } from 'crypto';
-import fs from 'fs/promises';
+import { uploadToCloudinary, deleteFromCloudinary, type CloudinaryUploadResult } from './cloudinary';
 
 const supabaseUrl = process.env.SUPABASE_URL!;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY!;
@@ -14,7 +14,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export class SupabaseStorage implements IStorage {
-  private uploads: Map<string, string> = new Map(); // Maps file id to file path
+  private uploads: Map<string, string> = new Map(); // Maps file id to cloudinary public_id
   
   constructor() {
     // Cleanup expired files every hour
@@ -33,17 +33,33 @@ export class SupabaseStorage implements IStorage {
   }
 
   // File operations
-  async createFile(insertFile: InsertFile & { filename: string }): Promise<File> {
+  async createFile(insertFile: InsertFile & { filename: string; filePath?: string }): Promise<File> {
     const id = randomUUID();
     const code = this.generateCode();
     const now = new Date();
     const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours
 
+    let cloudinaryPublicId = '';
+    
+    // Upload to Cloudinary if file path is provided
+    if (insertFile.filePath) {
+      try {
+        const cloudinaryResult = await uploadToCloudinary(insertFile.filePath, {
+          public_id: `bolt-${id}`,
+          folder: 'bolt-files'
+        });
+        cloudinaryPublicId = cloudinaryResult.public_id;
+      } catch (error) {
+        console.error('Failed to upload to Cloudinary:', error);
+        throw new Error('File upload to cloud storage failed');
+      }
+    }
+
     const { data, error } = await supabase
       .from('files')
       .insert({
         id,
-        filename: insertFile.filename,
+        filename: cloudinaryPublicId || insertFile.filename, // Store Cloudinary public_id
         original_name: insertFile.originalName,
         mime_type: insertFile.mimeType,
         size: insertFile.size,
@@ -130,7 +146,10 @@ export class SupabaseStorage implements IStorage {
   }
 
   async deleteFile(id: string): Promise<void> {
-    // Delete from database
+    // Get file info first to get Cloudinary public_id
+    const file = await this.getFileById(id);
+    
+    // Remove from database
     const { error } = await supabase
       .from('files')
       .delete()
@@ -138,16 +157,16 @@ export class SupabaseStorage implements IStorage {
 
     if (error) throw error;
 
-    // Delete physical file
-    const filePath = this.uploads.get(id);
-    if (filePath) {
+    // Clean up file from Cloudinary
+    if (file?.filename) {
       try {
-        await fs.unlink(filePath);
+        await deleteFromCloudinary(file.filename);
       } catch (error) {
-        console.error('Error deleting file:', error);
+        console.error('Failed to delete file from Cloudinary:', error);
       }
-      this.uploads.delete(id);
     }
+    
+    this.uploads.delete(id);
   }
 
   async getActiveFiles(): Promise<File[]> {
@@ -212,8 +231,8 @@ export class SupabaseStorage implements IStorage {
     }
   }
 
-  setFilePath(id: string, filePath: string): void {
-    this.uploads.set(id, filePath);
+  setFilePath(id: string, cloudinaryUrl: string): void {
+    this.uploads.set(id, cloudinaryUrl);
   }
 
   getFilePath(id: string): string | undefined {

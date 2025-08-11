@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { insertFileSchema, insertUserSchema, loginUserSchema } from "@shared/schema";
 import { supabaseStorage } from "./supabase";
+import { cloudinary } from "./cloudinary";
 import multer from "multer";
 import path from "path";
 import { randomUUID } from "crypto";
@@ -157,12 +158,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         mimeType: req.file.mimetype,
         size: req.file.size,
         filename: req.file.filename,
+        filePath: req.file.path, // Local file path for Cloudinary upload
         password: req.body.password || null,
         userId: userId, // Use session user ID for logged in users
       };
 
       const file = await supabaseStorage.createFile(fileData);
-      supabaseStorage.setFilePath(file.id, req.file.path);
+      
+      // Store Cloudinary URL instead of local path
+      const cloudinaryUrl = cloudinary.url(file.filename, { secure: true });
+      supabaseStorage.setFilePath(file.id, cloudinaryUrl);
+      
+      // Clean up temporary local file
+      try {
+        await import('fs/promises').then(fs => fs.unlink(req.file!.path));
+      } catch (error) {
+        console.warn('Failed to clean up temporary file:', error);
+      }
 
       res.json({
         id: file.id,
@@ -222,16 +234,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid password" });
       }
 
-      const filePath = supabaseStorage.getFilePath(file.id);
-      if (!filePath) {
+      // Get Cloudinary URL for the file
+      const cloudinaryUrl = cloudinary.url(file.filename, { 
+        secure: true,
+        flags: 'attachment',
+        resource_type: 'auto'
+      });
+
+      if (!cloudinaryUrl) {
         return res.status(404).json({ message: "File data not found" });
       }
 
       await supabaseStorage.incrementDownloadCount(file.id);
 
-      res.setHeader('Content-Disposition', `attachment; filename="${file.originalName}"`);
-      res.setHeader('Content-Type', file.mimeType);
-      res.sendFile(path.resolve(filePath));
+      // Redirect to Cloudinary URL for download
+      res.redirect(cloudinaryUrl);
     } catch (error) {
       console.error("Download error:", error);
       res.status(500).json({ message: "Download failed" });
