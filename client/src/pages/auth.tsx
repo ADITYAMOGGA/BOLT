@@ -89,9 +89,28 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden">
+      {/* Animated Background Objects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Floating geometric shapes */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-purple-500/20 rounded-full blur-xl animate-float" />
+        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-emerald-400/20 to-blue-500/20 rounded-lg rotate-45 blur-lg animate-float-delayed" />
+        <div className="absolute bottom-40 left-20 w-40 h-40 bg-gradient-to-br from-purple-400/15 to-pink-500/15 rounded-full blur-2xl animate-float-slow" />
+        <div className="absolute bottom-20 right-40 w-28 h-28 bg-gradient-to-br from-orange-400/20 to-red-500/20 rounded-lg rotate-12 blur-lg animate-bounce-slow" />
+        <div className="absolute top-1/2 left-1/4 w-20 h-20 bg-gradient-to-br from-cyan-400/25 to-blue-600/25 rounded-full blur-md animate-pulse-slow" />
+        <div className="absolute top-1/3 right-1/3 w-36 h-36 bg-gradient-to-br from-indigo-400/15 to-purple-600/15 rounded-2xl rotate-45 blur-xl animate-float-reverse" />
+        
+        {/* Particle-like dots */}
+        <div className="absolute top-1/4 left-1/2 w-3 h-3 bg-blue-500/40 rounded-full animate-ping" />
+        <div className="absolute top-3/4 left-1/4 w-2 h-2 bg-emerald-500/40 rounded-full animate-ping delay-1000" />
+        <div className="absolute top-1/2 right-1/4 w-4 h-4 bg-purple-500/30 rounded-full animate-ping delay-2000" />
+        
+        {/* Grid pattern overlay */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-5 dark:opacity-10" />
+      </div>
+
       {/* Navigation */}
-      <nav className="absolute top-0 left-0 right-0 z-10 p-6">
+      <nav className="absolute top-0 left-0 right-0 z-20 p-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/">
             <div className="flex items-center space-x-3 cursor-pointer">
@@ -111,10 +130,10 @@ export default function AuthPage() {
         </div>
       </nav>
 
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen relative z-10">
         {/* Left Side - Info */}
         <div className="hidden lg:flex lg:w-1/2 relative">
-          <div className="flex flex-col justify-center px-16 py-24">
+          <div className="flex flex-col justify-center px-16 py-24 relative z-10">
             <div className="max-w-lg">
               <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
                 Fast & Secure File Sharing
@@ -159,9 +178,9 @@ export default function AuthPage() {
         </div>
 
         {/* Right Side - Auth Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-24">
+        <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-24 relative z-10">
           <div className="w-full max-w-md">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8">
+            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/30 p-8 transition-all duration-700 hover:shadow-3xl hover:scale-[1.02]">
               {/* Header */}
               <div className="text-center mb-8">
                 <div className="flex items-center justify-center space-x-2 mb-4">
@@ -183,13 +202,13 @@ export default function AuthPage() {
               </div>
 
               {/* Mode Toggle */}
-              <div className="flex bg-gray-100 dark:bg-slate-700 rounded-lg p-1 mb-6">
+              <div className="flex bg-gray-100/60 dark:bg-slate-700/60 backdrop-blur-sm rounded-xl p-1 mb-6 border border-gray-200/50 dark:border-slate-600/50">
                 <button
                   onClick={() => switchMode('login')}
-                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 transform ${
                     mode === 'login'
-                      ? 'bg-white dark:bg-slate-600 text-gray-900 dark:text-white shadow-sm'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                      ? 'bg-white dark:bg-slate-600 text-gray-900 dark:text-white shadow-lg scale-105 border border-blue-200/50 dark:border-blue-500/30'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-600/50'
                   }`}
                   data-testid="tab-login"
                 >
@@ -197,10 +216,10 @@ export default function AuthPage() {
                 </button>
                 <button
                   onClick={() => switchMode('signup')}
-                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 transform ${
                     mode === 'signup'
-                      ? 'bg-white dark:bg-slate-600 text-gray-900 dark:text-white shadow-sm'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                      ? 'bg-white dark:bg-slate-600 text-gray-900 dark:text-white shadow-lg scale-105 border border-emerald-200/50 dark:border-emerald-500/30'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-600/50'
                   }`}
                   data-testid="tab-signup"
                 >
@@ -217,9 +236,11 @@ export default function AuthPage() {
               )}
 
               {/* Login Form */}
-              {mode === 'login' && (
-                <Form {...loginForm}>
-                  <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
+              <div className="relative">
+                {mode === 'login' && (
+                  <div className="animate-fade-in-up">
+                    <Form {...loginForm}>
+                      <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
                     <FormField
                       control={loginForm.control}
                       name="username"
@@ -257,23 +278,25 @@ export default function AuthPage() {
                         </FormItem>
                       )}
                     />
-                    <Button 
-                      type="submit" 
-                      className="w-full h-12 text-lg font-medium bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800" 
-                      disabled={isLoading}
-                      data-testid="button-login-submit"
-                    >
-                      {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-                      Sign In
-                    </Button>
-                  </form>
-                </Form>
-              )}
+                        <Button 
+                          type="submit" 
+                          className="w-full h-12 text-lg font-medium bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl" 
+                          disabled={isLoading}
+                          data-testid="button-login-submit"
+                        >
+                          {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                          Sign In
+                        </Button>
+                      </form>
+                    </Form>
+                  </div>
+                )}
 
-              {/* Signup Form */}
-              {mode === 'signup' && (
-                <Form {...signupForm}>
-                  <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-6">
+                {/* Signup Form */}
+                {mode === 'signup' && (
+                  <div className="animate-fade-in-up">
+                    <Form {...signupForm}>
+                      <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-6">
                     <FormField
                       control={signupForm.control}
                       name="username"
@@ -330,18 +353,20 @@ export default function AuthPage() {
                         </FormItem>
                       )}
                     />
-                    <Button 
-                      type="submit" 
-                      className="w-full h-12 text-lg font-medium bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800" 
-                      disabled={isLoading}
-                      data-testid="button-signup-submit"
-                    >
-                      {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-                      Create Account
-                    </Button>
-                  </form>
-                </Form>
-              )}
+                        <Button 
+                          type="submit" 
+                          className="w-full h-12 text-lg font-medium bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl" 
+                          disabled={isLoading}
+                          data-testid="button-signup-submit"
+                        >
+                          {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                          Create Account
+                        </Button>
+                      </form>
+                    </Form>
+                  </div>
+                )}
+              </div>
 
               {/* Footer */}
               <div className="mt-8 text-center">
