@@ -59,33 +59,27 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-7xl mx-auto">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
           
           {/* Left Panel - Core Action Area */}
-          <div className="space-y-8">
-            {/* Send Box */}
-            <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
-              <div className="mb-6">
-                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Plus className="w-8 h-8 text-white" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Send</h2>
-                <p className="text-gray-600">Upload files up to 200MB</p>
+          <div className="space-y-6">
+            {/* Send Box - Large Plus Icon */}
+            <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+              <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <Plus className="w-12 h-12 text-white" />
               </div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Send</h2>
               <AuthWarning />
               <FileUpload onUploadSuccess={handleUploadSuccess} />
             </div>
 
             {/* Receive Box */}
-            <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
-              <div className="mb-6">
-                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Download className="w-8 h-8 text-white" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Receive</h2>
-                <p className="text-gray-600">Enter 6-digit key</p>
+            <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+              <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <Download className="w-12 h-12 text-white" />
               </div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Receive</h2>
               <form onSubmit={handleDownloadSubmit} className="space-y-4">
                 <Input
                   id="download-code"
@@ -94,7 +88,7 @@ export default function Home() {
                   value={downloadCode}
                   onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
                   maxLength={6}
-                  className="text-center text-xl font-mono tracking-widest h-14 border-2 border-gray-200 focus:border-primary"
+                  className="text-center text-2xl font-mono tracking-widest h-16 border-2 border-gray-200 focus:border-primary rounded-xl"
                   data-testid="input-download-code"
                 />
                 <Button type="submit" className="w-full h-14 text-lg font-semibold" size="lg" data-testid="button-download">
@@ -105,56 +99,54 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right Panel - Promotional & Feature Area */}
+          {/* Right Panel - Introduction & Features */}
           <div className="space-y-8">
-            {/* Main Feature Highlight */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            {/* Main Introduction */}
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-6">
                 Want to send larger files securely?
-              </h2>
-              <p className="text-gray-600 text-lg mb-6">
-                BOLT makes file sharing simple and secure. No email attachments, no file size limits, no account required.
+              </h1>
+              <p className="text-white/90 text-xl mb-8 leading-relaxed">
+                BOLT makes file sharing simple and secure. Upload files up to 200MB, share them with unique codes, and they automatically delete after 24 hours for your security.
               </p>
-              <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold px-8 py-3" data-testid="button-see-features">
+              <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold px-8 py-4 text-lg" data-testid="button-see-features">
                 See more features
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>
 
             {/* Feature Illustration */}
-            <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl p-8 text-center">
-              <div className="mb-6">
-                <div className="w-24 h-24 bg-white rounded-full shadow-lg flex items-center justify-center mx-auto mb-4">
-                  <Zap className="w-12 h-12 text-primary" />
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+              <div className="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center mx-auto mb-4">
+                <Zap className="w-8 h-8 text-primary" />
+              </div>
+              <div className="bg-white rounded-lg shadow-sm p-4 max-w-sm mx-auto">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-gray-600">Secure Transfer</span>
+                  <Shield className="w-4 h-4 text-green-500" />
                 </div>
-                <div className="bg-white rounded-lg shadow-sm p-4 max-w-sm mx-auto">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-600">Secure Transfer</span>
-                    <Shield className="w-4 h-4 text-green-500" />
-                  </div>
-                  <div className="bg-gray-100 rounded h-2 mb-2">
-                    <div className="bg-primary rounded h-2 w-3/4"></div>
-                  </div>
-                  <span className="text-xs text-gray-500">Upload complete • Code: XYZ123</span>
+                <div className="bg-gray-100 rounded h-2 mb-2">
+                  <div className="bg-primary rounded h-2 w-3/4"></div>
                 </div>
+                <span className="text-xs text-gray-500">Upload complete • Code: ABC123</span>
               </div>
             </div>
 
             {/* Quick Features */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="font-bold text-lg text-gray-900 mb-4">Why choose BOLT?</h3>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+              <h3 className="font-bold text-xl text-white mb-6">Why choose BOLT?</h3>
               <div className="space-y-4">
                 <div className="flex items-center">
-                  <Shield className="w-5 h-5 text-green-500 mr-3" />
-                  <span className="text-gray-700">End-to-end encryption</span>
+                  <Shield className="w-6 h-6 text-green-400 mr-4" />
+                  <span className="text-white text-lg">End-to-end encryption</span>
                 </div>
                 <div className="flex items-center">
-                  <Clock className="w-5 h-5 text-blue-500 mr-3" />
-                  <span className="text-gray-700">24-hour auto-deletion</span>
+                  <Clock className="w-6 h-6 text-blue-400 mr-4" />
+                  <span className="text-white text-lg">24-hour auto-deletion</span>
                 </div>
                 <div className="flex items-center">
-                  <Globe className="w-5 h-5 text-purple-500 mr-3" />
-                  <span className="text-gray-700">Access from anywhere</span>
+                  <Globe className="w-6 h-6 text-purple-400 mr-4" />
+                  <span className="text-white text-lg">Access from anywhere</span>
                 </div>
               </div>
             </div>

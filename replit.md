@@ -12,6 +12,10 @@ Preferred communication style: Simple, everyday language.
 
 ### Migration to Replit Environment (August 2025)
 - ✅ **Successfully migrated from Replit Agent to standard Replit environment (August 14, 2025)**
+- ✅ **Complete homepage redesign with Send Anywhere inspired layout (August 14, 2025)**
+- ✅ Two-panel design: Left side action cards (Send/Receive), Right side introduction
+- ✅ Large circular icons (Plus for Send, Download for Receive)  
+- ✅ Purple background with white cards and pink/yellow accents
 - ✅ Converted to Supabase-only storage (removed in-memory storage)
 - ✅ **Major: Migrated from local file storage to Cloudinary cloud storage**
 - ✅ Added session management with express-session middleware
