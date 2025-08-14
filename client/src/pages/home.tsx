@@ -113,7 +113,7 @@ export default function Home() {
           {/* Left Panel - Core Action Area */}
           <div className="space-y-6 max-w-md">
             {/* Send Box - Just Plus Icon */}
-            <div className="bg-white rounded-xl shadow-xl py-4 px-6 text-center w-40 h-48">
+            <div className="bg-white rounded-xl shadow-xl py-4 px-6 text-center w-48 h-56">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -129,13 +129,13 @@ export default function Home() {
               >
                 {uploadMutation.isPending ? (
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-                    <p className="text-gray-600 text-xs">Uploading...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-3"></div>
+                    <p className="text-gray-600 text-sm">Uploading...</p>
                   </div>
                 ) : (
                   <div className="text-center">
-                    <Plus className="w-16 h-16 text-primary mx-auto mb-2" />
-                    <h2 className="text-lg font-bold text-gray-900">Send</h2>
+                    <Plus className="w-24 h-24 text-primary mx-auto mb-3" />
+                    <h2 className="text-2xl font-bold text-gray-900">Send</h2>
                   </div>
                 )}
               </div>
