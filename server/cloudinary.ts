@@ -7,10 +7,18 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET?.trim(),
 });
 
-// Validate configuration
-if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-  throw new Error('Missing Cloudinary environment variables');
+// Check if Cloudinary is configured
+const isCloudinaryConfigured = !!(
+  process.env.CLOUDINARY_CLOUD_NAME && 
+  process.env.CLOUDINARY_API_KEY && 
+  process.env.CLOUDINARY_API_SECRET
+);
+
+if (!isCloudinaryConfigured) {
+  console.warn('Cloudinary environment variables not set. File uploads will use local storage.');
 }
+
+export const cloudinaryEnabled = isCloudinaryConfigured;
 
 export { cloudinary };
 
@@ -30,7 +38,12 @@ export async function uploadToCloudinary(
     public_id?: string;
     resource_type?: 'auto' | 'image' | 'video' | 'raw';
   }
-): Promise<CloudinaryUploadResult> {
+): Promise<CloudinaryUploadResult | null> {
+  if (!isCloudinaryConfigured) {
+    console.warn('Cloudinary not configured, skipping upload');
+    return null;
+  }
+
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       folder: options?.folder || 'bolt-files',
@@ -55,6 +68,11 @@ export async function uploadToCloudinary(
 }
 
 export async function deleteFromCloudinary(publicId: string): Promise<void> {
+  if (!isCloudinaryConfigured) {
+    console.warn('Cloudinary not configured, skipping delete');
+    return;
+  }
+
   try {
     await cloudinary.uploader.destroy(publicId);
   } catch (error) {
@@ -68,7 +86,11 @@ export function getCloudinaryUrl(publicId: string, options?: {
   height?: number;
   crop?: string;
   quality?: string;
-}): string {
+}): string | null {
+  if (!isCloudinaryConfigured) {
+    return null;
+  }
+
   return cloudinary.url(publicId, {
     secure: true,
     ...options,

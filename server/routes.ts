@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { insertFileSchema, insertUserSchema, loginUserSchema } from "@shared/schema";
-import { supabaseStorage } from "./supabase";
+import { supabaseStorage, supabaseEnabled } from "./supabase";
+import { MemStorage } from "./storage";
 import { cloudinary } from "./cloudinary";
 import multer from "multer";
 import path from "path";
@@ -10,6 +11,9 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 
 const uploadDir = path.join(process.cwd(), 'uploads');
+
+// Use in-memory storage if Supabase is not configured
+const storage = supabaseEnabled ? supabaseStorage : new MemStorage();
 
 // Configure multer for file uploads
 const upload = multer({

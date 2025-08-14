@@ -4,14 +4,20 @@ import { type File, type InsertFile, type User, type InsertUser } from '@shared/
 import { randomUUID } from 'crypto';
 import { uploadToCloudinary, deleteFromCloudinary, type CloudinaryUploadResult } from './cloudinary';
 
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+const isSupabaseConfigured = !!(supabaseUrl && supabaseAnonKey);
+
+if (!isSupabaseConfigured) {
+  console.warn('Supabase environment variables not set. Using in-memory storage.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = isSupabaseConfigured 
+  ? createClient(supabaseUrl!, supabaseAnonKey!) 
+  : null;
+
+export const supabaseEnabled = isSupabaseConfigured;
 
 export class SupabaseStorage implements IStorage {
   private uploads: Map<string, string> = new Map(); // Maps file id to cloudinary public_id
@@ -48,7 +54,7 @@ export class SupabaseStorage implements IStorage {
           public_id: `bolt-${id}`,
           folder: 'bolt-files'
         });
-        cloudinaryPublicId = cloudinaryResult.public_id;
+        cloudinaryPublicId = cloudinaryResult?.public_id || '';
       } catch (error) {
         console.error('Failed to upload to Cloudinary:', error);
         throw new Error('File upload to cloud storage failed');
