@@ -113,7 +113,7 @@ export default function Home() {
           {/* Left Panel - Core Action Area */}
           <div className="space-y-6 max-w-md">
             {/* Send Box - Just Plus Icon */}
-            <div className="bg-white rounded-2xl shadow-xl p-4 text-center">
+            <div className="bg-white rounded-xl shadow-xl py-4 px-6 text-center w-40 h-48">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -123,19 +123,22 @@ export default function Home() {
                 data-testid="input-file-upload"
               />
               <div 
-                className="cursor-pointer hover:scale-105 transition-transform flex items-center justify-center mx-auto"
+                className="cursor-pointer hover:scale-105 transition-transform flex items-center justify-center h-full"
                 onClick={() => fileInputRef.current?.click()}
                 data-testid="button-send"
               >
-                <Plus className="w-20 h-20 text-primary" />
+                {uploadMutation.isPending ? (
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                    <p className="text-gray-600 text-xs">Uploading...</p>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <Plus className="w-16 h-16 text-primary mx-auto mb-2" />
+                    <h2 className="text-lg font-bold text-gray-900">Send</h2>
+                  </div>
+                )}
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mt-4 mb-2">Send</h2>
-              {uploadMutation.isPending && (
-                <div className="mt-4">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
-                  <p className="text-gray-600 text-sm mt-2">Uploading...</p>
-                </div>
-              )}
             </div>
 
             {/* Receive Box */}
