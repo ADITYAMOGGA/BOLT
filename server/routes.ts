@@ -169,16 +169,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const file = await storage.createFile(fileData);
       
-      // Store Cloudinary URL instead of local path if Supabase is enabled
-      if (supabaseEnabled) {
-        const cloudinaryUrl = cloudinary.url(file.filename, { secure: true });
-        (storage as any).setFilePath(file.id, cloudinaryUrl);
-      } else {
-        // For MemStorage, store the file path
-        (storage as any).setFilePath(file.id, fileData.filePath || '');
-      }
-      
-      // Clean up temporary local file
+      // Clean up temporary local file after upload
       try {
         await import('fs/promises').then(fs => fs.unlink(req.file!.path));
       } catch (error) {
@@ -243,21 +234,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid password" });
       }
 
-      // Get Cloudinary URL for the file
-      const cloudinaryUrl = cloudinary.url(file.filename, { 
-        secure: true,
-        flags: 'attachment',
-        resource_type: 'auto'
-      });
-
-      if (!cloudinaryUrl) {
-        return res.status(404).json({ message: "File data not found" });
-      }
-
       await storage.incrementDownloadCount(file.id);
 
-      // Redirect to Cloudinary URL for download
-      res.redirect(cloudinaryUrl);
+      if (supabaseEnabled) {
+        // For Supabase storage, use Cloudinary URL
+        // The filename field contains the Cloudinary public_id
+        // Use 'raw' resource type for non-image files
+        const isImageFile = file.mimeType.startsWith('image/');
+        const resourceType = isImageFile ? 'image' : 'raw';
+        
+        // Build Cloudinary URL manually to avoid problematic query parameters
+        const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+        const cloudinaryUrl = `https://res.cloudinary.com/${cloudName}/${resourceType}/upload/${file.filename}`;
+
+        if (!cloudinaryUrl) {
+          return res.status(404).json({ message: "File data not found" });
+        }
+
+        console.log(`Downloading file: ${file.originalName} from Cloudinary URL: ${cloudinaryUrl}`);
+        console.log(`File.filename (public_id): ${file.filename}`);
+        
+        // Test if the Cloudinary URL is accessible first
+        try {
+          const response = await fetch(cloudinaryUrl, { method: 'HEAD' });
+          if (!response.ok) {
+            console.error(`Cloudinary URL not accessible: ${response.status} ${response.statusText}`);
+            return res.status(404).json({ message: "File not found in cloud storage" });
+          }
+        } catch (error) {
+          console.error('Error checking Cloudinary URL:', error);
+          return res.status(500).json({ message: "Error accessing file storage" });
+        }
+        
+        // Set proper headers for download
+        res.set({
+          'Content-Disposition': `attachment; filename="${file.originalName}"`,
+          'Content-Type': file.mimeType
+        });
+        
+        // Redirect to Cloudinary URL for download
+        res.redirect(cloudinaryUrl);
+      } else {
+        // For MemStorage, serve file from local storage
+        const filePath = (storage as any).getFilePath(file.id);
+        if (!filePath) {
+          return res.status(404).json({ message: "File data not found" });
+        }
+
+        res.download(filePath, file.originalName);
+      }
     } catch (error) {
       console.error("Download error:", error);
       res.status(500).json({ message: "Download failed" });

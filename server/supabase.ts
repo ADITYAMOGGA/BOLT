@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { type IStorage } from './storage';
 import { type File, type InsertFile, type User, type InsertUser } from '@shared/schema';
 import { randomUUID } from 'crypto';
-import { uploadToCloudinary, deleteFromCloudinary, type CloudinaryUploadResult } from './cloudinary';
+import { uploadToCloudinary, deleteFromCloudinary, cloudinaryEnabled, type CloudinaryUploadResult } from './cloudinary';
 import { sql } from 'drizzle-orm';
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -27,6 +27,10 @@ export class SupabaseStorage implements IStorage {
     if (!supabase) {
       throw new Error('Supabase client is not initialized');
     }
+    if (!cloudinaryEnabled) {
+      console.error('Cloudinary is not configured but SupabaseStorage requires it');
+      throw new Error('Cloudinary must be configured to use SupabaseStorage');
+    }
     // Cleanup expired files every hour
     setInterval(() => {
       this.cleanupExpiredFiles();
@@ -49,20 +53,33 @@ export class SupabaseStorage implements IStorage {
     const now = new Date();
     const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours
 
+    // Debug logging can be removed in production
+    // console.log(`CreateFile called with:`, insertFile);
+
     let cloudinaryPublicId = '';
     
     // Upload to Cloudinary if file path is provided
     if (insertFile.filePath) {
       try {
+        console.log(`Uploading file to Cloudinary: ${insertFile.filePath}`);
         const cloudinaryResult = await uploadToCloudinary(insertFile.filePath, {
           public_id: `bolt-${id}`,
           folder: 'bolt-files'
         });
-        cloudinaryPublicId = cloudinaryResult?.public_id || '';
+        
+        if (!cloudinaryResult) {
+          console.error('Cloudinary upload returned null - Cloudinary not configured');
+          throw new Error('Cloudinary not configured - file upload failed');
+        }
+        
+        cloudinaryPublicId = cloudinaryResult.public_id;
+        console.log(`Successfully uploaded to Cloudinary with public_id: ${cloudinaryPublicId}`);
       } catch (error) {
         console.error('Failed to upload to Cloudinary:', error);
         throw new Error('File upload to cloud storage failed');
       }
+    } else {
+      console.warn('No file path provided for upload');
     }
 
     const { data, error } = await supabase!
