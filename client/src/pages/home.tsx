@@ -113,7 +113,7 @@ export default function Home() {
           {/* Left Panel - Core Action Area */}
           <div className="space-y-6 max-w-md">
             {/* Send Box - Just Plus Icon */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+            <div className="bg-white rounded-2xl shadow-xl p-4 text-center">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -123,13 +123,13 @@ export default function Home() {
                 data-testid="input-file-upload"
               />
               <div 
-                className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mx-auto cursor-pointer hover:scale-105 transition-transform"
+                className="cursor-pointer hover:scale-105 transition-transform flex items-center justify-center mx-auto"
                 onClick={() => fileInputRef.current?.click()}
                 data-testid="button-send"
               >
-                <Plus className="w-14 h-14 text-white" />
+                <Plus className="w-20 h-20 text-primary" />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mt-6 mb-2">Send</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mt-4 mb-2">Send</h2>
               {uploadMutation.isPending && (
                 <div className="mt-4">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
