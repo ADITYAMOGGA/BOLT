@@ -1,24 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { useAuth } from '@/contexts/auth-context';
 import { Navigation } from '@/components/navigation';
-import { FileUpload } from '@/components/file-upload';
-import { FileCard } from '@/components/file-card';
-import { AuthWarning } from '@/components/auth-warning';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Download, ArrowRight, Globe, Mail, Shield, Clock, Zap, ArrowLeft, Link, QrCode } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
-  const [showFileManager, setShowFileManager] = useState(false);
   const [downloadCode, setDownloadCode] = useState('');
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const queryClient = useQueryClient();
   
   // Upload state management
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -26,21 +21,6 @@ export default function Home() {
   const [uploadedFileData, setUploadedFileData] = useState<any>(null);
   const [sharingMethod, setSharingMethod] = useState<'code' | 'link' | 'email'>('code');
   const [timeLeft, setTimeLeft] = useState<number>(30 * 60); // 30 minutes in seconds
-
-  const { data: files = [], isLoading } = useQuery<any[]>({
-    queryKey: ['/api/files'],
-    enabled: showFileManager,
-  });
-
-  const handleUploadSuccess = () => {
-    setShowFileManager(true);
-    // Scroll to file manager
-    setTimeout(() => {
-      document.getElementById('file-manager')?.scrollIntoView({ 
-        behavior: 'smooth' 
-      });
-    }, 100);
-  };
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -61,11 +41,6 @@ export default function Home() {
       return response.json();
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/files'] });
-      if (user) {
-        queryClient.invalidateQueries({ queryKey: ['/api/files/user'] });
-      }
-      
       setUploadedFileData(data);
       setUploadStep('sharing');
       
@@ -73,7 +48,6 @@ export default function Home() {
         title: "File uploaded successfully!",
         description: `Share code: ${data.code}`,
       });
-      handleUploadSuccess();
     },
     onError: (error: any) => {
       toast({
@@ -326,7 +300,7 @@ export default function Home() {
                 Want to send larger files securely?
               </h1>
               <p className="text-white/90 text-xl mb-8 leading-relaxed">
-                BOLT makes file sharing simple and secure. Upload files up to 200MB, share them with unique codes, and they automatically delete after 24 hours for your security.
+                BOLT makes file sharing simple and secure. Upload files up to 200MB, share them with unique codes, and they automatically delete after 30 minutes for your security.
               </p>
               <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold px-8 py-4 text-lg" data-testid="button-see-features">
                 See more features
@@ -361,7 +335,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-center">
                   <Clock className="w-6 h-6 text-blue-400 mr-4" />
-                  <span className="text-white text-lg">24-hour auto-deletion</span>
+                  <span className="text-white text-lg">30-minute auto-deletion</span>
                 </div>
                 <div className="flex items-center">
                   <Globe className="w-6 h-6 text-purple-400 mr-4" />
@@ -372,31 +346,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* File Manager - Show below if files exist */}
-        {showFileManager && (
-          <div className="mt-12" id="file-manager">
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-xl font-semibold mb-6 text-gray-900">Your Files</h3>
-              
-              {isLoading ? (
-                <div className="text-center py-12">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                  <p className="text-gray-600 mt-4">Loading files...</p>
-                </div>
-              ) : files.length > 0 ? (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {files.map((file: any) => (
-                    <FileCard key={file.id} file={file} />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <p className="text-gray-600">No files uploaded yet.</p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+
 
         {/* Language Selector - Bottom Right */}
         <div className="fixed bottom-4 right-4">

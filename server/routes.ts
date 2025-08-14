@@ -1,8 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { insertFileSchema, insertUserSchema, loginUserSchema } from "@shared/schema";
-import { supabaseStorage, supabaseEnabled } from "./supabase";
-import { MemStorage } from "./storage";
+import { supabaseStorage } from "./supabase";
 import { cloudinary } from "./cloudinary";
 import multer from "multer";
 import path from "path";
@@ -12,8 +11,8 @@ import { z } from "zod";
 
 const uploadDir = path.join(process.cwd(), 'uploads');
 
-// Use in-memory storage if Supabase is not configured
-const storage = supabaseEnabled ? supabaseStorage : new MemStorage();
+// Use Supabase storage only
+const storage = supabaseStorage;
 
 // Configure multer for file uploads
 const upload = multer({
@@ -236,7 +235,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       await storage.incrementDownloadCount(file.id);
 
-      if (supabaseEnabled) {
+      // Using Supabase storage with Cloudinary
+      {
         // For Supabase storage, use Cloudinary URL
         // The filename field contains the Cloudinary public_id
         // Use 'raw' resource type for non-image files
@@ -274,14 +274,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Redirect to Cloudinary URL for download
         res.redirect(cloudinaryUrl);
-      } else {
-        // For MemStorage, serve file from local storage
-        const filePath = (storage as any).getFilePath(file.id);
-        if (!filePath) {
-          return res.status(404).json({ message: "File data not found" });
-        }
-
-        res.download(filePath, file.originalName);
       }
     } catch (error) {
       console.error("Download error:", error);
