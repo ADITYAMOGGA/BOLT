@@ -142,27 +142,27 @@ export default function Home() {
             </div>
 
             {/* Receive Box */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-              <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <Download className="w-14 h-14 text-white" />
+            <div className="bg-white rounded-xl shadow-xl py-6 px-8 text-center w-64 h-72">
+              <div className="flex flex-col items-center justify-center h-full">
+                <Download className="w-32 h-32 text-primary mb-4" />
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">Receive</h2>
+                <form onSubmit={handleDownloadSubmit} className="space-y-4 w-full">
+                  <Input
+                    id="download-code"
+                    type="text"
+                    placeholder="6-digit key"
+                    value={downloadCode}
+                    onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
+                    maxLength={6}
+                    className="text-center text-xl font-mono tracking-widest h-12 border-2 border-gray-200 focus:border-primary rounded-xl"
+                    data-testid="input-download-code"
+                  />
+                  <Button type="submit" className="w-full h-12 text-lg font-semibold" size="lg" data-testid="button-download">
+                    <Download className="w-5 h-5 mr-2" />
+                    Receive
+                  </Button>
+                </form>
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Receive</h2>
-              <form onSubmit={handleDownloadSubmit} className="space-y-4">
-                <Input
-                  id="download-code"
-                  type="text"
-                  placeholder="6-digit key"
-                  value={downloadCode}
-                  onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
-                  maxLength={6}
-                  className="text-center text-2xl font-mono tracking-widest h-16 border-2 border-gray-200 focus:border-primary rounded-xl"
-                  data-testid="input-download-code"
-                />
-                <Button type="submit" className="w-full h-14 text-lg font-semibold" size="lg" data-testid="button-download">
-                  <Download className="w-5 h-5 mr-2" />
-                  Receive
-                </Button>
-              </form>
             </div>
           </div>
 
