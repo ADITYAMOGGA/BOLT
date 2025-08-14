@@ -43,7 +43,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if user already exists
-      const existingUser = await supabaseStorage.getUserByUsername(username);
+      const existingUser = await storage.getUserByUsername(username);
       if (existingUser) {
         return res.status(409).json({ message: "Username already exists" });
       }
@@ -51,8 +51,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Hash password
       const passwordHash = await bcrypt.hash(password, 10);
 
-      // Create user in Supabase
-      await supabaseStorage.createUser({ username, password, passwordHash });
+      // Create user
+      await storage.createUser({ username, password, passwordHash });
 
       res.status(201).json({ message: "Account created successfully! Please login." });
     } catch (error) {
@@ -69,8 +69,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Username and password are required" });
       }
 
-      // Get user from Supabase
-      const user = await supabaseStorage.getUserByUsername(username);
+      // Get user
+      const user = await storage.getUserByUsername(username);
       if (!user) {
         return res.status(401).json({ message: "Invalid username or password" });
       }
@@ -115,7 +115,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const user = await supabaseStorage.getUserById(userId);
+      const user = await storage.getUserById(userId);
       if (!user) {
         return res.status(401).json({ message: "User not found" });
       }
@@ -139,7 +139,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const files = await supabaseStorage.getUserFiles(userId);
+      const files = await storage.getUserFiles(userId);
       res.json(files);
     } catch (error) {
       console.error("Error fetching user files:", error);
@@ -167,11 +167,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: userId, // Use session user ID for logged in users
       };
 
-      const file = await supabaseStorage.createFile(fileData);
+      const file = await storage.createFile(fileData);
       
-      // Store Cloudinary URL instead of local path
-      const cloudinaryUrl = cloudinary.url(file.filename, { secure: true });
-      supabaseStorage.setFilePath(file.id, cloudinaryUrl);
+      // Store Cloudinary URL instead of local path if Supabase is enabled
+      if (supabaseEnabled) {
+        const cloudinaryUrl = cloudinary.url(file.filename, { secure: true });
+        (storage as any).setFilePath(file.id, cloudinaryUrl);
+      } else {
+        // For MemStorage, store the file path
+        (storage as any).setFilePath(file.id, fileData.filePath || '');
+      }
       
       // Clean up temporary local file
       try {
@@ -200,7 +205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/file/:code", async (req, res) => {
     try {
       const { code } = req.params;
-      const file = await supabaseStorage.getFileByCode(code);
+      const file = await storage.getFileByCode(code);
       
       if (!file) {
         return res.status(404).json({ message: "File not found or expired" });
@@ -227,7 +232,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { code } = req.params;
       const { password } = req.body;
-      const file = await supabaseStorage.getFileByCode(code);
+      const file = await storage.getFileByCode(code);
       
       if (!file) {
         return res.status(404).json({ message: "File not found or expired" });
@@ -249,7 +254,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "File data not found" });
       }
 
-      await supabaseStorage.incrementDownloadCount(file.id);
+      await storage.incrementDownloadCount(file.id);
 
       // Redirect to Cloudinary URL for download
       res.redirect(cloudinaryUrl);
@@ -267,10 +272,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let files;
       if (userId) {
         // Get files for specific user
-        files = await supabaseStorage.getUserFiles(userId);
+        files = await storage.getUserFiles(userId);
       } else {
         // Get all active files (admin view or anonymous files)
-        files = await supabaseStorage.getActiveFiles();
+        files = await storage.getActiveFiles();
       }
       
       const fileList = files.map(file => ({
@@ -297,7 +302,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/file/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      await supabaseStorage.deleteFile(id);
+      await storage.deleteFile(id);
       res.json({ message: "File deleted successfully" });
     } catch (error) {
       console.error("Delete error:", error);

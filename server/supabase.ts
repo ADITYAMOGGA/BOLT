@@ -3,6 +3,7 @@ import { type IStorage } from './storage';
 import { type File, type InsertFile, type User, type InsertUser } from '@shared/schema';
 import { randomUUID } from 'crypto';
 import { uploadToCloudinary, deleteFromCloudinary, type CloudinaryUploadResult } from './cloudinary';
+import { sql } from 'drizzle-orm';
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
@@ -150,7 +151,14 @@ export class SupabaseStorage implements IStorage {
   }
 
   async incrementDownloadCount(id: string): Promise<void> {
-    const { error } = await supabase!.rpc('increment_download_count', { file_id: id });
+    // Get current count first, then increment
+    const file = await this.getFileById(id);
+    if (!file) return;
+    
+    const { error } = await supabase!
+      .from('files')
+      .update({ download_count: file.downloadCount + 1 })
+      .eq('id', id);
     if (error) throw error;
   }
 
