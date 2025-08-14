@@ -23,6 +23,9 @@ export class SupabaseStorage implements IStorage {
   private uploads: Map<string, string> = new Map(); // Maps file id to cloudinary public_id
   
   constructor() {
+    if (!supabase) {
+      throw new Error('Supabase client is not initialized');
+    }
     // Cleanup expired files every hour
     setInterval(() => {
       this.cleanupExpiredFiles();
@@ -61,7 +64,7 @@ export class SupabaseStorage implements IStorage {
       }
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('files')
       .insert({
         id,
@@ -95,7 +98,7 @@ export class SupabaseStorage implements IStorage {
   }
 
   async getFileByCode(code: string): Promise<File | undefined> {
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('files')
       .select('*')
       .eq('code', code)
@@ -121,7 +124,7 @@ export class SupabaseStorage implements IStorage {
   }
 
   async getFileById(id: string): Promise<File | undefined> {
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('files')
       .select('*')
       .eq('id', id)
@@ -147,7 +150,7 @@ export class SupabaseStorage implements IStorage {
   }
 
   async incrementDownloadCount(id: string): Promise<void> {
-    const { error } = await supabase.rpc('increment_download_count', { file_id: id });
+    const { error } = await supabase!.rpc('increment_download_count', { file_id: id });
     if (error) throw error;
   }
 
@@ -156,7 +159,7 @@ export class SupabaseStorage implements IStorage {
     const file = await this.getFileById(id);
     
     // Remove from database
-    const { error } = await supabase
+    const { error } = await supabase!
       .from('files')
       .delete()
       .eq('id', id);
@@ -176,7 +179,7 @@ export class SupabaseStorage implements IStorage {
   }
 
   async getActiveFiles(): Promise<File[]> {
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('files')
       .select('*')
       .gt('expires_at', new Date().toISOString())
@@ -200,7 +203,7 @@ export class SupabaseStorage implements IStorage {
   }
 
   async getUserFiles(userId: string): Promise<any[]> {
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('files')
       .select('*')
       .eq('user_id', userId)
@@ -224,7 +227,7 @@ export class SupabaseStorage implements IStorage {
   }
 
   async cleanupExpiredFiles(): Promise<void> {
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('files')
       .select('id')
       .lt('expires_at', new Date().toISOString());
@@ -248,7 +251,7 @@ export class SupabaseStorage implements IStorage {
   async createUser(insertUser: InsertUser & { passwordHash: string }): Promise<User> {
     const id = randomUUID();
 
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('users')
       .insert({
         id,
@@ -269,7 +272,7 @@ export class SupabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('users')
       .select('*')
       .eq('username', username)
@@ -287,7 +290,7 @@ export class SupabaseStorage implements IStorage {
   }
 
   async getUserById(id: string): Promise<User | undefined> {
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('users')
       .select('*')
       .eq('id', id)
