@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useRef } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { useAuth } from '@/contexts/auth-context';
 import { Navigation } from '@/components/navigation';
@@ -17,6 +17,8 @@ export default function Home() {
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
 
   const { data: files = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/files'],
@@ -31,6 +33,52 @@ export default function Home() {
         behavior: 'smooth' 
       });
     }, 100);
+  };
+
+  const uploadMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`${response.status}: ${errorText}`);
+      }
+
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/files'] });
+      if (user) {
+        queryClient.invalidateQueries({ queryKey: ['/api/files/user'] });
+      }
+      
+      toast({
+        title: "File uploaded successfully!",
+        description: `Share code: ${data.code}`,
+      });
+      handleUploadSuccess();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Upload failed",
+        description: error.message || "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      uploadMutation.mutate(file);
+    }
   };
 
   const handleDownloadSubmit = (e: React.FormEvent) => {
@@ -59,27 +107,43 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-7xl">
           
           {/* Left Panel - Core Action Area */}
-          <div className="space-y-6">
-            {/* Send Box - Large Plus Icon */}
+          <div className="space-y-6 max-w-md">
+            {/* Send Box - Just Plus Icon */}
             <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-              <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <Plus className="w-12 h-12 text-white" />
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                onChange={handleFileSelect}
+                accept="*/*"
+                data-testid="input-file-upload"
+              />
+              <div 
+                className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mx-auto cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => fileInputRef.current?.click()}
+                data-testid="button-send"
+              >
+                <Plus className="w-14 h-14 text-white" />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Send</h2>
-              <AuthWarning />
-              <FileUpload onUploadSuccess={handleUploadSuccess} />
+              <h2 className="text-3xl font-bold text-gray-900 mt-6 mb-2">Send</h2>
+              {uploadMutation.isPending && (
+                <div className="mt-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
+                  <p className="text-gray-600 text-sm mt-2">Uploading...</p>
+                </div>
+              )}
             </div>
 
             {/* Receive Box */}
             <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-              <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <Download className="w-12 h-12 text-white" />
+              <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <Download className="w-14 h-14 text-white" />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Receive</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Receive</h2>
               <form onSubmit={handleDownloadSubmit} className="space-y-4">
                 <Input
                   id="download-code"
