@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { Navigation } from '@/components/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Download, ArrowRight, Globe, Mail, Shield, Clock, Zap, ArrowLeft, Link, QrCode } from 'lucide-react';
+import { Plus, Download, ArrowRight, Globe, Mail, Shield, Clock, Zap, ArrowLeft, Link, QrCode, Copy, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
@@ -21,6 +21,10 @@ export default function Home() {
   const [uploadedFileData, setUploadedFileData] = useState<any>(null);
   const [sharingMethod, setSharingMethod] = useState<'code' | 'link' | 'email'>('code');
   const [timeLeft, setTimeLeft] = useState<number>(30 * 60); // 30 minutes in seconds
+  
+  // Receive state management
+  const [receiveStep, setReceiveStep] = useState<'initial' | 'loading' | 'found'>('initial');
+  const [foundFile, setFoundFile] = useState<any>(null);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -43,11 +47,6 @@ export default function Home() {
     onSuccess: (data) => {
       setUploadedFileData(data);
       setUploadStep('sharing');
-      
-      toast({
-        title: "File uploaded successfully!",
-        description: `Share code: ${data.code}`,
-      });
     },
     onError: (error: any) => {
       toast({
@@ -104,18 +103,96 @@ export default function Home() {
     setTimeLeft(30 * 60);
   };
 
-  const handleDownloadSubmit = (e: React.FormEvent) => {
+  const handleCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (downloadCode.trim()) {
-      const code = downloadCode.trim().toUpperCase();
-      navigate(`/d/${code}`);
-    } else {
+    if (!downloadCode.trim()) return;
+
+    setReceiveStep('loading');
+    
+    try {
+      const response = await fetch(`/api/file/${downloadCode}`);
+      
+      if (response.ok) {
+        const fileData = await response.json();
+        setFoundFile(fileData);
+        setReceiveStep('found');
+      } else {
+        const error = await response.json();
+        toast({
+          title: "File not found",
+          description: error.message || "Invalid code or file expired.",
+          variant: "destructive",
+        });
+        setReceiveStep('initial');
+      }
+    } catch (error) {
       toast({
-        title: "Enter a code",
-        description: "Please enter a 6-character sharing code.",
+        title: "Error",
+        description: "Please check your connection and try again.",
+        variant: "destructive",
+      });
+      setReceiveStep('initial');
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!foundFile) return;
+    
+    try {
+      const response = await fetch(`/api/download/${downloadCode}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = foundFile.original_name || 'download';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        toast({
+          title: "Download started",
+          description: "Your file is being downloaded.",
+        });
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Download failed",
+          description: error.message || "File not found or expired.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Download failed",
+        description: "Please check your connection and try again.",
         variant: "destructive",
       });
     }
+  };
+
+  const handleCopyCode = () => {
+    if (uploadedFileData?.code) {
+      navigator.clipboard.writeText(uploadedFileData.code);
+      toast({
+        title: "Code copied!",
+        description: "Share code copied to clipboard.",
+      });
+    }
+  };
+
+  const resetReceiveState = () => {
+    setReceiveStep('initial');
+    setFoundFile(null);
+    setDownloadCode('');
   };
 
   return (
@@ -258,37 +335,95 @@ export default function Home() {
                       ))}
                     </div>
 
-                    {/* QR Code placeholder - Using QrCode icon as placeholder */}
-                    <div className="flex justify-center">
+                    {/* QR Code placeholder and Copy button */}
+                    <div className="flex flex-col items-center space-y-4">
                       <div className="w-32 h-32 border-2 border-gray-200 rounded-lg flex items-center justify-center">
                         <QrCode className="w-16 h-16 text-gray-400" />
                       </div>
+                      <Button 
+                        onClick={handleCopyCode}
+                        variant="outline"
+                        className="w-full"
+                        data-testid="button-copy-code"
+                      >
+                        <Copy className="w-4 h-4 mr-2" />
+                        Copy Code
+                      </Button>
                     </div>
                   </div>
                 </>
               )}
             </div>
 
-            {/* Receive Box */}
-            <div className="bg-white rounded-xl shadow-lg p-6 w-96 h-36">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Receive</h2>
-              <form onSubmit={handleDownloadSubmit}>
-                <div className="flex items-center space-x-3">
-                  <Input
-                    id="download-code"
-                    type="text"
-                    placeholder="Input key"
-                    value={downloadCode}
-                    onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
-                    maxLength={6}
-                    className="flex-1 text-gray-600 bg-gray-50 border-gray-200 focus:border-primary rounded-lg h-12"
-                    data-testid="input-download-code"
-                  />
-                  <Button type="submit" variant="ghost" size="sm" className="p-2" data-testid="button-download">
-                    <Download className="w-5 h-5 text-gray-400" />
-                  </Button>
-                </div>
-              </form>
+            {/* Receive Box - Dynamic content based on receive state */}
+            <div className="bg-white rounded-xl shadow-lg p-6 w-96" style={{ minHeight: receiveStep === 'initial' ? '144px' : 'auto' }}>
+              {receiveStep === 'initial' && (
+                <>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Receive</h2>
+                  <form onSubmit={handleCodeSubmit}>
+                    <div className="flex items-center space-x-3">
+                      <Input
+                        id="download-code"
+                        type="text"
+                        placeholder="Input key"
+                        value={downloadCode}
+                        onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
+                        maxLength={6}
+                        className="flex-1 text-gray-600 bg-gray-50 border-gray-200 focus:border-primary rounded-lg h-12"
+                        data-testid="input-download-code"
+                      />
+                      <Button type="submit" variant="ghost" size="sm" className="p-2" data-testid="button-search">
+                        <Download className="w-5 h-5 text-gray-400" />
+                      </Button>
+                    </div>
+                  </form>
+                </>
+              )}
+
+              {receiveStep === 'loading' && (
+                <>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Searching...</h2>
+                  <div className="flex items-center space-x-3">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                    <span className="text-sm text-gray-500">Looking for file...</span>
+                  </div>
+                </>
+              )}
+
+              {receiveStep === 'found' && foundFile && (
+                <>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold text-gray-900">File Found</h2>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={resetReceiveState}
+                      data-testid="button-back-receive"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="text-sm text-gray-600 truncate" data-testid="text-found-filename">
+                      <strong>Name:</strong> {foundFile.original_name}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <strong>Size:</strong> {(foundFile.size / 1024 / 1024).toFixed(2)} MB
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <strong>Expires:</strong> {new Date(foundFile.expires_at).toLocaleString()}
+                    </div>
+                    <Button
+                      onClick={handleDownload}
+                      className="w-full bg-primary text-white hover:bg-primary/90"
+                      data-testid="button-download-file"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Download File
+                    </Button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
