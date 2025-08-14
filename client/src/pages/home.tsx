@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { useAuth } from '@/contexts/auth-context';
@@ -8,7 +8,7 @@ import { FileCard } from '@/components/file-card';
 import { AuthWarning } from '@/components/auth-warning';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Download, ArrowRight, Globe, Mail, Shield, Clock, Zap } from 'lucide-react';
+import { Plus, Download, ArrowRight, Globe, Mail, Shield, Clock, Zap, ArrowLeft, Link, QrCode } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
@@ -19,6 +19,13 @@ export default function Home() {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+  
+  // Upload state management
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadStep, setUploadStep] = useState<'initial' | 'uploading' | 'sharing' | 'waiting'>('initial');
+  const [uploadedFileData, setUploadedFileData] = useState<any>(null);
+  const [sharingMethod, setSharingMethod] = useState<'code' | 'link' | 'email'>('code');
+  const [timeLeft, setTimeLeft] = useState<number>(30 * 60); // 30 minutes in seconds
 
   const { data: files = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/files'],
@@ -59,6 +66,9 @@ export default function Home() {
         queryClient.invalidateQueries({ queryKey: ['/api/files/user'] });
       }
       
+      setUploadedFileData(data);
+      setUploadStep('sharing');
+      
       toast({
         title: "File uploaded successfully!",
         description: `Share code: ${data.code}`,
@@ -71,14 +81,53 @@ export default function Home() {
         description: error.message || "Please try again.",
         variant: "destructive",
       });
+      setUploadStep('initial');
+      setSelectedFile(null);
     },
   });
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
+      setUploadStep('uploading');
       uploadMutation.mutate(file);
     }
+  };
+
+  const handleSharingMethodSelect = (method: 'code' | 'link' | 'email') => {
+    setSharingMethod(method);
+    if (method === 'code') {
+      setUploadStep('waiting');
+      // Start countdown timer
+      setTimeLeft(30 * 60);
+    }
+  };
+
+  // Timer effect for countdown
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (uploadStep === 'waiting' && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [uploadStep, timeLeft]);
+
+  // Format time as MM:SS
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const resetUploadState = () => {
+    setSelectedFile(null);
+    setUploadStep('initial');
+    setUploadedFileData(null);
+    setSharingMethod('code');
+    setTimeLeft(30 * 60);
   };
 
   const handleDownloadSubmit = (e: React.FormEvent) => {
@@ -112,8 +161,8 @@ export default function Home() {
           
           {/* Left Panel - Core Action Area */}
           <div className="space-y-6 max-w-lg">
-            {/* Send Box */}
-            <div className="bg-white rounded-xl shadow-lg p-6 w-96 h-36">
+            {/* Send Box - Dynamic content based on upload state */}
+            <div className="bg-white rounded-xl shadow-lg p-6 w-96" style={{ minHeight: uploadStep === 'initial' ? '144px' : 'auto' }}>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -122,18 +171,128 @@ export default function Home() {
                 accept="*/*"
                 data-testid="input-file-upload"
               />
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Send</h2>
-              <div 
-                className="cursor-pointer hover:scale-105 transition-transform flex items-center justify-center h-16"
-                onClick={() => fileInputRef.current?.click()}
-                data-testid="button-send"
-              >
-                {uploadMutation.isPending ? (
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                ) : (
-                  <Plus className="w-12 h-12 text-primary" />
-                )}
-              </div>
+              
+              {uploadStep === 'initial' && (
+                <>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Send</h2>
+                  <div 
+                    className="cursor-pointer hover:scale-105 transition-transform flex items-center justify-center h-16"
+                    onClick={() => fileInputRef.current?.click()}
+                    data-testid="button-send"
+                  >
+                    <Plus className="w-12 h-12 text-primary" />
+                  </div>
+                </>
+              )}
+
+              {uploadStep === 'uploading' && (
+                <>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Uploading...</h2>
+                  <div className="space-y-3">
+                    <div className="text-sm text-gray-600 truncate" data-testid="text-filename">
+                      {selectedFile?.name}
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                      <span className="text-sm text-gray-500">Uploading file...</span>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {uploadStep === 'sharing' && (
+                <>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold text-gray-900">Choose sharing method</h2>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={resetUploadState}
+                      data-testid="button-reset"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="text-sm text-gray-600 mb-4 truncate" data-testid="text-uploaded-filename">
+                    {selectedFile?.name}
+                  </div>
+                  <div className="space-y-2">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      onClick={() => handleSharingMethodSelect('code')}
+                      data-testid="button-share-code"
+                    >
+                      <QrCode className="w-4 h-4 mr-2" />
+                      6-digit code (Free)
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      onClick={() => handleSharingMethodSelect('link')}
+                      disabled={!user}
+                      data-testid="button-share-link"
+                    >
+                      <Link className="w-4 h-4 mr-2" />
+                      Direct link {!user && '(Login required)'}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      onClick={() => handleSharingMethodSelect('email')}
+                      disabled={!user}
+                      data-testid="button-share-email"
+                    >
+                      <Mail className="w-4 h-4 mr-2" />
+                      Email {!user && '(Login required)'}
+                    </Button>
+                  </div>
+                </>
+              )}
+
+              {uploadStep === 'waiting' && uploadedFileData && (
+                <>
+                  <div className="flex items-center justify-between mb-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={resetUploadState}
+                      data-testid="button-back"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-1" />
+                      Waiting...
+                    </Button>
+                  </div>
+                  <div className="text-center space-y-4">
+                    <p className="text-sm text-gray-600">
+                      Enter the 6-digit key on the receiving device
+                    </p>
+                    <p className="text-sm text-red-600">
+                      Expires in <span data-testid="text-timer">{formatTime(timeLeft)}</span>
+                    </p>
+                    
+                    {/* 6-digit code display */}
+                    <div className="flex justify-center space-x-2 my-6">
+                      {uploadedFileData.code.split('').map((digit: string, index: number) => (
+                        <div 
+                          key={index}
+                          className="w-12 h-12 border-2 border-gray-200 rounded-lg flex items-center justify-center text-2xl font-bold text-gray-800"
+                          data-testid={`digit-${index}`}
+                        >
+                          {digit}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* QR Code placeholder - Using QrCode icon as placeholder */}
+                    <div className="flex justify-center">
+                      <div className="w-32 h-32 border-2 border-gray-200 rounded-lg flex items-center justify-center">
+                        <QrCode className="w-16 h-16 text-gray-400" />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Receive Box */}

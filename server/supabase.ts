@@ -51,7 +51,7 @@ export class SupabaseStorage implements IStorage {
     const id = randomUUID();
     const code = this.generateCode();
     const now = new Date();
-    const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours
+    const expiresAt = new Date(now.getTime() + 30 * 60 * 1000); // 30 minutes
 
     // Debug logging can be removed in production
     // console.log(`CreateFile called with:`, insertFile);
