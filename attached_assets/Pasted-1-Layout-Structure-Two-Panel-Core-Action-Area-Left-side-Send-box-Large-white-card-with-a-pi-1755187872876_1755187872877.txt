@@ -1,0 +1,73 @@
+1. Layout & Structure
+
+Two-Panel Core Action Area (Left side):
+
+Send box: Large white card with a pink “+” icon to add files.
+
+Receive box: Similar white card with an input field for the 6-digit key.
+
+The stacked design makes the primary actions extremely obvious.
+
+Promotional & Feature Area (Right side):
+
+Headline and short description explaining a specific feature (“Send larger files on Gmail”).
+
+CTA button (See more features) in a contrasting yellow.
+
+An illustration of a person using a laptop with the Send Anywhere icon speech bubble — adds personality and approachability.
+
+Small product screenshot (Gmail integration) showing context of use.
+
+2. Navigation Bar
+
+Positioned at the top with a white background for contrast.
+
+Logo on the left (pink and black).
+
+Menu items: Transfer, Product, Pricing, Download.
+
+Contact Us button in blue for visibility.
+
+“Sign in” link on the top right.
+
+Small “New plans are newly released!” label for announcements.
+
+3. Visual Design
+
+Color Scheme:
+
+Dominant purple background — draws focus to white action cards and yellow CTA.
+
+Pink accent color for icons and highlights.
+
+Blue for secondary CTAs.
+
+Typography:
+
+Large bold headings (“Send” / “Receive” and “Want to send larger files on Gmail?”).
+
+Supporting text smaller and lighter for hierarchy.
+
+Shadows on the “Send” and “Receive” boxes for depth.
+
+4. Call-to-Action Strategy
+
+Immediate functional CTAs (“Send” and “Receive”).
+
+Promotional CTA (“See more features”) to encourage exploring premium capabilities.
+
+Contact button in navbar for lead generation.
+
+5. Supporting Elements
+
+Ad Placement: Small ad block at the top right (“Authentic Jobs”) — non-intrusive but visible.
+
+Language Selector: Bottom right globe icon for international accessibility.
+
+6. UX & User Flow Intent
+
+Primary Goal: Let users instantly start sending or receiving files without reading much text.
+
+Secondary Goal: Highlight a specific feature (Gmail large file sending) to drive awareness of integrations.
+
+Tertiary Goal: Push engagement via “Contact Us” and “See more features”.

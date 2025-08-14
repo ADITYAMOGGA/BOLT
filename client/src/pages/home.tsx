@@ -8,7 +8,7 @@ import { FileCard } from '@/components/file-card';
 import { AuthWarning } from '@/components/auth-warning';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Rocket, Shield, Users, Download, ArrowRight, CloudUpload } from 'lucide-react';
+import { Plus, Download, ArrowRight, Globe, Mail, Shield, Clock, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
@@ -51,74 +51,110 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-foreground mb-3">Secure File Sharing</h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Upload files up to 200MB and share them securely with unique codes. Files auto-delete after 24 hours.
-          </p>
+      {/* Top Announcement Bar */}
+      <div className="bg-yellow-100 border-b border-yellow-200 py-2">
+        <div className="container mx-auto px-4 text-center">
+          <span className="text-sm text-gray-700">🎉 New plans are newly released!</span>
         </div>
+      </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {/* Upload Section */}
-          <div className="space-y-6">
-            <div className="bg-card rounded-lg border shadow-sm p-6">
-              <div className="flex items-center mb-4">
-                <CloudUpload className="w-5 h-5 text-primary mr-2" />
-                <h2 className="text-xl font-semibold">Upload File</h2>
+      {/* Main Content */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-7xl mx-auto">
+          
+          {/* Left Panel - Core Action Area */}
+          <div className="space-y-8">
+            {/* Send Box */}
+            <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
+              <div className="mb-6">
+                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Plus className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Send</h2>
+                <p className="text-gray-600">Upload files up to 200MB</p>
               </div>
               <AuthWarning />
               <FileUpload onUploadSuccess={handleUploadSuccess} />
             </div>
-          </div>
 
-          {/* Download Section */}
-          <div className="space-y-6">
-            <div className="bg-card rounded-lg border shadow-sm p-6">
-              <div className="flex items-center mb-4">
-                <Download className="w-5 h-5 text-primary mr-2" />
-                <h2 className="text-xl font-semibold">Download File</h2>
+            {/* Receive Box */}
+            <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
+              <div className="mb-6">
+                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Download className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Receive</h2>
+                <p className="text-gray-600">Enter 6-digit key</p>
               </div>
               <form onSubmit={handleDownloadSubmit} className="space-y-4">
-                <div>
-                  <label htmlFor="download-code" className="text-sm font-medium text-foreground block mb-2">
-                    Enter sharing code
-                  </label>
-                  <Input
-                    id="download-code"
-                    type="text"
-                    placeholder="e.g. ABC123"
-                    value={downloadCode}
-                    onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
-                    maxLength={6}
-                    className="text-center text-lg font-mono tracking-wider"
-                  />
-                </div>
-                <Button type="submit" className="w-full" size="lg">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download File
+                <Input
+                  id="download-code"
+                  type="text"
+                  placeholder="6-digit key"
+                  value={downloadCode}
+                  onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
+                  maxLength={6}
+                  className="text-center text-xl font-mono tracking-widest h-14 border-2 border-gray-200 focus:border-primary"
+                  data-testid="input-download-code"
+                />
+                <Button type="submit" className="w-full h-14 text-lg font-semibold" size="lg" data-testid="button-download">
+                  <Download className="w-5 h-5 mr-2" />
+                  Receive
                 </Button>
               </form>
             </div>
+          </div>
+
+          {/* Right Panel - Promotional & Feature Area */}
+          <div className="space-y-8">
+            {/* Main Feature Highlight */}
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Want to send larger files securely?
+              </h2>
+              <p className="text-gray-600 text-lg mb-6">
+                BOLT makes file sharing simple and secure. No email attachments, no file size limits, no account required.
+              </p>
+              <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold px-8 py-3" data-testid="button-see-features">
+                See more features
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+
+            {/* Feature Illustration */}
+            <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl p-8 text-center">
+              <div className="mb-6">
+                <div className="w-24 h-24 bg-white rounded-full shadow-lg flex items-center justify-center mx-auto mb-4">
+                  <Zap className="w-12 h-12 text-primary" />
+                </div>
+                <div className="bg-white rounded-lg shadow-sm p-4 max-w-sm mx-auto">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-600">Secure Transfer</span>
+                    <Shield className="w-4 h-4 text-green-500" />
+                  </div>
+                  <div className="bg-gray-100 rounded h-2 mb-2">
+                    <div className="bg-primary rounded h-2 w-3/4"></div>
+                  </div>
+                  <span className="text-xs text-gray-500">Upload complete • Code: XYZ123</span>
+                </div>
+              </div>
+            </div>
 
             {/* Quick Features */}
-            <div className="bg-card rounded-lg border shadow-sm p-6">
-              <h3 className="font-semibold mb-4">Features</h3>
-              <div className="space-y-3">
-                <div className="flex items-center text-sm">
-                  <Shield className="w-4 h-4 text-green-600 mr-3" />
-                  <span>Secure cloud storage</span>
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="font-bold text-lg text-gray-900 mb-4">Why choose BOLT?</h3>
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <Shield className="w-5 h-5 text-green-500 mr-3" />
+                  <span className="text-gray-700">End-to-end encryption</span>
                 </div>
-                <div className="flex items-center text-sm">
-                  <Rocket className="w-4 h-4 text-blue-600 mr-3" />
-                  <span>24-hour auto-deletion</span>
+                <div className="flex items-center">
+                  <Clock className="w-5 h-5 text-blue-500 mr-3" />
+                  <span className="text-gray-700">24-hour auto-deletion</span>
                 </div>
-                <div className="flex items-center text-sm">
-                  <Users className="w-4 h-4 text-purple-600 mr-3" />
-                  <span>No account required</span>
+                <div className="flex items-center">
+                  <Globe className="w-5 h-5 text-purple-500 mr-3" />
+                  <span className="text-gray-700">Access from anywhere</span>
                 </div>
               </div>
             </div>
@@ -128,13 +164,13 @@ export default function Home() {
         {/* File Manager - Show below if files exist */}
         {showFileManager && (
           <div className="mt-12" id="file-manager">
-            <div className="bg-card rounded-lg border shadow-sm p-6">
-              <h3 className="text-xl font-semibold mb-6">Your Files</h3>
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="text-xl font-semibold mb-6 text-gray-900">Your Files</h3>
               
               {isLoading ? (
                 <div className="text-center py-12">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                  <p className="text-muted-foreground mt-4">Loading files...</p>
+                  <p className="text-gray-600 mt-4">Loading files...</p>
                 </div>
               ) : files.length > 0 ? (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -144,12 +180,19 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <p className="text-muted-foreground">No files uploaded yet.</p>
+                  <p className="text-gray-600">No files uploaded yet.</p>
                 </div>
               )}
             </div>
           </div>
         )}
+
+        {/* Language Selector - Bottom Right */}
+        <div className="fixed bottom-4 right-4">
+          <Button variant="ghost" size="sm" className="text-white hover:text-gray-200">
+            <Globe className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -26,37 +26,32 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="bg-card border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-card/80">
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/">
               <div className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity">
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-primary-foreground" />
+                  <Zap className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="text-xl font-bold text-foreground">BOLT</h1>
+                <h1 className="text-xl font-bold text-gray-900">BOLT</h1>
               </div>
             </Link>
             
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-1">
-              {navLinks.map((link) => (
-                <Link key={link.href} href={link.href}>
-                  <span className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer text-sm font-medium ${
-                    location === link.href
-                      ? 'bg-accent text-accent-foreground'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-                  }`}>
-                    <link.icon className="w-4 h-4" />
-                    <span>{link.label}</span>
-                  </span>
-                </Link>
-              ))}
+              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900">Transfer</Button>
+              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900">Product</Button>
+              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900">Pricing</Button>
+              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900">Download</Button>
             </div>
             
             {/* Right side buttons */}
             <div className="flex items-center space-x-3">
+              <Button variant="outline" size="sm" className="border-blue-500 text-blue-600 hover:bg-blue-50">
+                Contact Us
+              </Button>
               {/* Authentication */}
               {user ? (
                 <DropdownMenu>
