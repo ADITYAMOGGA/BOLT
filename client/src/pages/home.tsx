@@ -111,9 +111,9 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-7xl">
           
           {/* Left Panel - Core Action Area */}
-          <div className="space-y-6 max-w-md">
-            {/* Send Box - Just Plus Icon */}
-            <div className="bg-white rounded-xl shadow-xl py-6 px-8 text-center w-64 h-72">
+          <div className="space-y-6 max-w-lg">
+            {/* Send Box */}
+            <div className="bg-white rounded-xl shadow-lg p-6 w-96 h-36">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -122,47 +122,40 @@ export default function Home() {
                 accept="*/*"
                 data-testid="input-file-upload"
               />
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Send</h2>
               <div 
-                className="cursor-pointer hover:scale-105 transition-transform flex items-center justify-center h-full"
+                className="cursor-pointer hover:scale-105 transition-transform flex items-center justify-center h-16"
                 onClick={() => fileInputRef.current?.click()}
                 data-testid="button-send"
               >
                 {uploadMutation.isPending ? (
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
-                    <p className="text-gray-600 text-lg">Uploading...</p>
-                  </div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 ) : (
-                  <div className="text-center">
-                    <Plus className="w-32 h-32 text-primary mx-auto mb-4" />
-                    <h2 className="text-3xl font-bold text-gray-900">Send</h2>
-                  </div>
+                  <Plus className="w-12 h-12 text-primary" />
                 )}
               </div>
             </div>
 
             {/* Receive Box */}
-            <div className="bg-white rounded-xl shadow-xl py-6 px-8 text-center w-64 h-72">
-              <div className="flex flex-col items-center justify-center h-full">
-                <Download className="w-32 h-32 text-primary mb-4" />
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Receive</h2>
-                <form onSubmit={handleDownloadSubmit} className="space-y-4 w-full">
+            <div className="bg-white rounded-xl shadow-lg p-6 w-96 h-36">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Receive</h2>
+              <form onSubmit={handleDownloadSubmit}>
+                <div className="flex items-center space-x-3">
                   <Input
                     id="download-code"
                     type="text"
-                    placeholder="6-digit key"
+                    placeholder="Input key"
                     value={downloadCode}
                     onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
                     maxLength={6}
-                    className="text-center text-xl font-mono tracking-widest h-12 border-2 border-gray-200 focus:border-primary rounded-xl"
+                    className="flex-1 text-gray-600 bg-gray-50 border-gray-200 focus:border-primary rounded-lg h-12"
                     data-testid="input-download-code"
                   />
-                  <Button type="submit" className="w-full h-12 text-lg font-semibold" size="lg" data-testid="button-download">
-                    <Download className="w-5 h-5 mr-2" />
-                    Receive
+                  <Button type="submit" variant="ghost" size="sm" className="p-2" data-testid="button-download">
+                    <Download className="w-5 h-5 text-gray-400" />
                   </Button>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
 
