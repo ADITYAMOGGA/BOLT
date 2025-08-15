@@ -26,7 +26,7 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-card border-b-2 border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -35,21 +35,21 @@ export function Navigation() {
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <Zap className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="text-xl font-bold text-gray-900">BOLT</h1>
+                <h1 className="text-xl font-bold text-foreground">BOLT</h1>
               </div>
             </Link>
             
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-1">
-              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900">Transfer</Button>
-              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900">Product</Button>
-              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900">Pricing</Button>
-              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900">Download</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">Transfer</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">Product</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">Pricing</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">Download</Button>
             </div>
             
             {/* Right side buttons */}
             <div className="flex items-center space-x-3">
-              <Button variant="outline" size="sm" className="border-blue-500 text-blue-600 hover:bg-blue-50">
+              <Button variant="outline" size="sm" className="border-2 border-primary text-primary hover:bg-primary/10">
                 Contact Us
               </Button>
               {/* Authentication */}
@@ -135,7 +135,7 @@ export function Navigation() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-card border-b border-border">
+        <div className="lg:hidden bg-card border-b-2 border-border">
           <div className="container mx-auto px-4 py-4 space-y-2">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>

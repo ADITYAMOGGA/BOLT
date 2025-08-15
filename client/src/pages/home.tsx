@@ -200,20 +200,20 @@ export default function Home() {
       <Navigation />
       
       {/* Top Announcement Bar */}
-      <div className="bg-yellow-100 border-b border-yellow-200 py-3">
+      <div className="bg-accent border-2 border-border py-3">
         <div className="container mx-auto px-4 text-center">
-          <span className="text-sm font-medium text-gray-700">🎉 New plans are newly released!</span>
+          <span className="text-sm font-medium text-accent-foreground">🎉 New plans are newly released!</span>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 border-2 border-border bg-background/50">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 max-w-6xl mx-auto">
           
           {/* Left Panel - Core Action Area */}
-          <div className="space-y-8 w-full max-w-lg mx-auto lg:mx-0">
+          <div className="space-y-8 w-full max-w-lg mx-auto lg:mx-0 p-6 border-2 border-border bg-background/30 rounded-2xl">
             {/* Send Box - Dynamic content based on upload state */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '160px' : 'auto' }}>
+            <div className="bg-white rounded-2xl border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '160px' : 'auto' }}>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -369,7 +369,7 @@ export default function Home() {
             </div>
 
             {/* Receive Box - Dynamic content based on receive state */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '160px' : 'auto' }}>
+            <div className="bg-white rounded-2xl border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '160px' : 'auto' }}>
               {receiveStep === 'initial' && (
                 <>
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Receive</h2>
@@ -448,53 +448,53 @@ export default function Home() {
           </div>
 
           {/* Right Panel - Introduction & Features */}
-          <div className="space-y-10 lg:pl-8">
+          <div className="space-y-10 lg:pl-8 p-6 border-2 border-border bg-primary/20 rounded-2xl">
             {/* Main Introduction */}
-            <div className="text-center lg:text-left">
-              <h1 className="text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
+            <div className="text-center lg:text-left p-6 border-2 border-border bg-background/40 rounded-xl">
+              <h1 className="text-5xl lg:text-6xl font-bold text-foreground mb-8 leading-tight">
                 Want to send larger files securely?
               </h1>
-              <p className="text-white/90 text-xl lg:text-2xl mb-10 leading-relaxed">
+              <p className="text-foreground/80 text-xl lg:text-2xl mb-10 leading-relaxed">
                 BOLT makes file sharing simple and secure. Upload files up to 200MB, share them with unique codes, and they automatically delete after 30 minutes for your security.
               </p>
-              <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold px-10 py-6 text-xl rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" data-testid="button-see-features">
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold px-10 py-6 text-xl rounded-xl border-2 border-border shadow-lg hover:shadow-xl transition-all duration-300" data-testid="button-see-features">
                 See more features
                 <ArrowRight className="w-6 h-6 ml-3" />
               </Button>
             </div>
 
             {/* Feature Illustration */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 text-center border border-white/20">
-              <div className="w-20 h-20 bg-white rounded-full shadow-xl flex items-center justify-center mx-auto mb-6">
-                <Zap className="w-10 h-10 text-primary" />
+            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 text-center border-2 border-border">
+              <div className="w-20 h-20 bg-primary rounded-full shadow-xl flex items-center justify-center mx-auto mb-6 border-2 border-border">
+                <Zap className="w-10 h-10 text-primary-foreground" />
               </div>
-              <div className="bg-white rounded-2xl shadow-lg p-6 max-w-sm mx-auto">
+              <div className="bg-white rounded-2xl border-2 border-border shadow-lg p-6 max-w-sm mx-auto">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-base font-medium text-gray-700">Secure Transfer</span>
+                  <span className="text-base font-medium text-foreground">Secure Transfer</span>
                   <Shield className="w-5 h-5 text-green-500" />
                 </div>
-                <div className="bg-gray-100 rounded-full h-3 mb-4">
+                <div className="bg-muted rounded-full h-3 mb-4 border border-border">
                   <div className="bg-primary rounded-full h-3 w-3/4 transition-all duration-500"></div>
                 </div>
-                <span className="text-sm font-medium text-gray-600">Upload complete • Code: ABC123</span>
+                <span className="text-sm font-medium text-muted-foreground">Upload complete • Code: ABC123</span>
               </div>
             </div>
 
             {/* Quick Features */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
-              <h3 className="font-bold text-2xl text-white mb-8">Why choose BOLT?</h3>
+            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 border-2 border-border">
+              <h3 className="font-bold text-2xl text-foreground mb-8">Why choose BOLT?</h3>
               <div className="space-y-6">
-                <div className="flex items-center p-4 bg-white/5 rounded-xl">
-                  <Shield className="w-8 h-8 text-green-400 mr-5" />
-                  <span className="text-white text-xl font-medium">End-to-end encryption</span>
+                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
+                  <Shield className="w-8 h-8 text-green-600 mr-5" />
+                  <span className="text-foreground text-xl font-medium">End-to-end encryption</span>
                 </div>
-                <div className="flex items-center p-4 bg-white/5 rounded-xl">
-                  <Clock className="w-8 h-8 text-blue-400 mr-5" />
-                  <span className="text-white text-xl font-medium">30-minute auto-deletion</span>
+                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
+                  <Clock className="w-8 h-8 text-blue-600 mr-5" />
+                  <span className="text-foreground text-xl font-medium">30-minute auto-deletion</span>
                 </div>
-                <div className="flex items-center p-4 bg-white/5 rounded-xl">
-                  <Globe className="w-8 h-8 text-purple-400 mr-5" />
-                  <span className="text-white text-xl font-medium">Access from anywhere</span>
+                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
+                  <Globe className="w-8 h-8 text-purple-600 mr-5" />
+                  <span className="text-foreground text-xl font-medium">Access from anywhere</span>
                 </div>
               </div>
             </div>
@@ -505,7 +505,7 @@ export default function Home() {
 
         {/* Language Selector - Bottom Right */}
         <div className="fixed bottom-6 right-6">
-          <Button variant="ghost" size="lg" className="text-white hover:text-gray-200 bg-white/10 backdrop-blur-sm hover:bg-white/20 rounded-full p-4">
+          <Button variant="ghost" size="lg" className="text-foreground hover:text-primary bg-background/80 backdrop-blur-sm hover:bg-background/90 rounded-full p-4 border-2 border-border">
             <Globe className="w-5 h-5" />
           </Button>
         </div>
