@@ -207,11 +207,11 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 border-2 border-border bg-background/50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 max-w-6xl mx-auto">
           
           {/* Left Panel - Core Action Area */}
-          <div className="space-y-8 w-full max-w-lg mx-auto lg:mx-0 p-6 border-2 border-border bg-background/30 rounded-2xl">
+          <div className="space-y-8 w-full max-w-lg mx-auto lg:mx-0">
             {/* Send Box - Dynamic content based on upload state */}
             <div className="bg-white rounded-2xl border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '160px' : 'auto' }}>
               <input
@@ -448,7 +448,7 @@ export default function Home() {
           </div>
 
           {/* Right Panel - Introduction & Features */}
-          <div className="space-y-10 lg:pl-8 p-6 border-2 border-border bg-primary/20 rounded-2xl">
+          <div className="space-y-10 lg:pl-8">
             {/* Main Introduction */}
             <div className="text-center lg:text-left p-6 border-2 border-border bg-background/40 rounded-xl">
               <h1 className="text-5xl lg:text-6xl font-bold text-foreground mb-8 leading-tight">
