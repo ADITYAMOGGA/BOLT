@@ -200,20 +200,20 @@ export default function Home() {
       <Navigation />
       
       {/* Top Announcement Bar */}
-      <div className="bg-yellow-100 border-b border-yellow-200 py-2">
+      <div className="bg-yellow-100 border-b border-yellow-200 py-3">
         <div className="container mx-auto px-4 text-center">
-          <span className="text-sm text-gray-700">🎉 New plans are newly released!</span>
+          <span className="text-sm font-medium text-gray-700">🎉 New plans are newly released!</span>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 max-w-6xl mx-auto">
           
           {/* Left Panel - Core Action Area */}
-          <div className="space-y-6 max-w-lg">
+          <div className="space-y-8 w-full max-w-lg mx-auto lg:mx-0">
             {/* Send Box - Dynamic content based on upload state */}
-            <div className="bg-white rounded-xl shadow-lg p-6 w-96" style={{ minHeight: uploadStep === 'initial' ? '144px' : 'auto' }}>
+            <div className="bg-white rounded-2xl shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '160px' : 'auto' }}>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -225,27 +225,27 @@ export default function Home() {
               
               {uploadStep === 'initial' && (
                 <>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Send</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Send</h2>
                   <div 
-                    className="cursor-pointer hover:scale-105 transition-transform flex items-center justify-center h-16"
+                    className="cursor-pointer hover:scale-105 transition-all duration-300 flex items-center justify-center h-20 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl border-2 border-dashed border-primary/30 hover:border-primary/60"
                     onClick={() => fileInputRef.current?.click()}
                     data-testid="button-send"
                   >
-                    <Plus className="w-12 h-12 text-primary" />
+                    <Plus className="w-16 h-16 text-primary" />
                   </div>
                 </>
               )}
 
               {uploadStep === 'uploading' && (
                 <>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Uploading...</h2>
-                  <div className="space-y-3">
-                    <div className="text-sm text-gray-600 truncate" data-testid="text-filename">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Uploading...</h2>
+                  <div className="space-y-4">
+                    <div className="text-base font-medium text-gray-700 truncate p-3 bg-gray-50 rounded-lg" data-testid="text-filename">
                       {selectedFile?.name}
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
-                      <span className="text-sm text-gray-500">Uploading file...</span>
+                    <div className="flex items-center space-x-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                      <span className="text-base text-gray-600">Uploading file...</span>
                     </div>
                   </div>
                 </>
@@ -253,49 +253,59 @@ export default function Home() {
 
               {uploadStep === 'sharing' && (
                 <>
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-gray-900">Choose sharing method</h2>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">Choose sharing method</h2>
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="lg"
                       onClick={resetUploadState}
                       data-testid="button-reset"
+                      className="hover:bg-gray-100 rounded-xl"
                     >
-                      <ArrowLeft className="w-4 h-4" />
+                      <ArrowLeft className="w-5 h-5" />
                     </Button>
                   </div>
-                  <div className="text-sm text-gray-600 mb-4 truncate" data-testid="text-uploaded-filename">
+                  <div className="text-base font-medium text-gray-700 mb-6 p-3 bg-gray-50 rounded-lg truncate" data-testid="text-uploaded-filename">
                     {selectedFile?.name}
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-4">
                     <Button
                       variant="outline"
-                      className="w-full justify-start"
+                      className="w-full justify-start h-16 text-lg border-2 hover:border-primary hover:bg-primary/5 rounded-xl"
                       onClick={() => handleSharingMethodSelect('code')}
                       data-testid="button-share-code"
                     >
-                      <QrCode className="w-4 h-4 mr-2" />
-                      6-digit code (Free)
+                      <QrCode className="w-6 h-6 mr-4" />
+                      <div className="text-left">
+                        <div className="font-semibold">6-digit code</div>
+                        <div className="text-sm text-gray-500">Free</div>
+                      </div>
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full justify-start"
+                      className="w-full justify-start h-16 text-lg border-2 hover:border-primary hover:bg-primary/5 rounded-xl disabled:opacity-50"
                       onClick={() => handleSharingMethodSelect('link')}
                       disabled={!user}
                       data-testid="button-share-link"
                     >
-                      <Link className="w-4 h-4 mr-2" />
-                      Direct link {!user && '(Login required)'}
+                      <Link className="w-6 h-6 mr-4" />
+                      <div className="text-left">
+                        <div className="font-semibold">Direct link</div>
+                        <div className="text-sm text-gray-500">{!user ? 'Login required' : 'Premium feature'}</div>
+                      </div>
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full justify-start"
+                      className="w-full justify-start h-16 text-lg border-2 hover:border-primary hover:bg-primary/5 rounded-xl disabled:opacity-50"
                       onClick={() => handleSharingMethodSelect('email')}
                       disabled={!user}
                       data-testid="button-share-email"
                     >
-                      <Mail className="w-4 h-4 mr-2" />
-                      Email {!user && '(Login required)'}
+                      <Mail className="w-6 h-6 mr-4" />
+                      <div className="text-left">
+                        <div className="font-semibold">Email</div>
+                        <div className="text-sm text-gray-500">{!user ? 'Login required' : 'Premium feature'}</div>
+                      </div>
                     </Button>
                   </div>
                 </>
@@ -303,31 +313,34 @@ export default function Home() {
 
               {uploadStep === 'waiting' && uploadedFileData && (
                 <>
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-6">
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="lg"
                       onClick={resetUploadState}
                       data-testid="button-back"
+                      className="hover:bg-gray-100 rounded-xl"
                     >
-                      <ArrowLeft className="w-4 h-4 mr-1" />
+                      <ArrowLeft className="w-5 h-5 mr-2" />
                       Waiting...
                     </Button>
                   </div>
-                  <div className="text-center space-y-4">
-                    <p className="text-sm text-gray-600">
-                      Enter the 6-digit key on the receiving device
-                    </p>
-                    <p className="text-sm text-red-600">
-                      Expires in <span data-testid="text-timer">{formatTime(timeLeft)}</span>
-                    </p>
+                  <div className="text-center space-y-6">
+                    <div className="space-y-2">
+                      <p className="text-lg font-medium text-gray-700">
+                        Enter the 6-digit key on the receiving device
+                      </p>
+                      <p className="text-base text-red-600 font-semibold">
+                        Expires in <span data-testid="text-timer" className="font-bold">{formatTime(timeLeft)}</span>
+                      </p>
+                    </div>
                     
                     {/* 6-digit code display */}
-                    <div className="flex justify-center space-x-2 my-6">
+                    <div className="flex justify-center space-x-3 my-8">
                       {uploadedFileData.code.split('').map((digit: string, index: number) => (
                         <div 
                           key={index}
-                          className="w-12 h-12 border-2 border-gray-200 rounded-lg flex items-center justify-center text-2xl font-bold text-gray-800"
+                          className="w-16 h-16 border-2 border-primary/30 bg-primary/5 rounded-xl flex items-center justify-center text-3xl font-bold text-primary shadow-sm"
                           data-testid={`digit-${index}`}
                         >
                           {digit}
@@ -336,17 +349,17 @@ export default function Home() {
                     </div>
 
                     {/* QR Code placeholder and Copy button */}
-                    <div className="flex flex-col items-center space-y-4">
-                      <div className="w-32 h-32 border-2 border-gray-200 rounded-lg flex items-center justify-center">
-                        <QrCode className="w-16 h-16 text-gray-400" />
+                    <div className="flex flex-col items-center space-y-6">
+                      <div className="w-40 h-40 border-2 border-gray-200 bg-gray-50 rounded-2xl flex items-center justify-center">
+                        <QrCode className="w-20 h-20 text-gray-400" />
                       </div>
                       <Button 
                         onClick={handleCopyCode}
                         variant="outline"
-                        className="w-full"
+                        className="w-full h-14 text-lg font-semibold border-2 hover:border-primary hover:bg-primary/5 rounded-xl"
                         data-testid="button-copy-code"
                       >
-                        <Copy className="w-4 h-4 mr-2" />
+                        <Copy className="w-5 h-5 mr-3" />
                         Copy Code
                       </Button>
                     </div>
@@ -356,24 +369,24 @@ export default function Home() {
             </div>
 
             {/* Receive Box - Dynamic content based on receive state */}
-            <div className="bg-white rounded-xl shadow-lg p-6 w-96" style={{ minHeight: receiveStep === 'initial' ? '144px' : 'auto' }}>
+            <div className="bg-white rounded-2xl shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '160px' : 'auto' }}>
               {receiveStep === 'initial' && (
                 <>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Receive</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Receive</h2>
                   <form onSubmit={handleCodeSubmit}>
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-4">
                       <Input
                         id="download-code"
                         type="text"
-                        placeholder="Input key"
+                        placeholder="Enter 6-digit key"
                         value={downloadCode}
                         onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
                         maxLength={6}
-                        className="flex-1 text-gray-600 bg-gray-50 border-gray-200 focus:border-primary rounded-lg h-12"
+                        className="flex-1 text-lg font-medium text-gray-700 bg-gray-50 border-2 border-gray-200 focus:border-primary rounded-xl h-14 px-4"
                         data-testid="input-download-code"
                       />
-                      <Button type="submit" variant="ghost" size="sm" className="p-2" data-testid="button-search">
-                        <Download className="w-5 h-5 text-gray-400" />
+                      <Button type="submit" variant="default" size="lg" className="px-6 h-14 bg-primary hover:bg-primary/90" data-testid="button-search">
+                        <Download className="w-5 h-5" />
                       </Button>
                     </div>
                   </form>
@@ -382,43 +395,50 @@ export default function Home() {
 
               {receiveStep === 'loading' && (
                 <>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Searching...</h2>
-                  <div className="flex items-center space-x-3">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
-                    <span className="text-sm text-gray-500">Looking for file...</span>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Searching...</h2>
+                  <div className="flex items-center space-x-4">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                    <span className="text-base text-gray-600">Looking for file...</span>
                   </div>
                 </>
               )}
 
               {receiveStep === 'found' && foundFile && (
                 <>
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-gray-900">File Found</h2>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">File Found</h2>
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="lg"
                       onClick={resetReceiveState}
                       data-testid="button-back-receive"
+                      className="hover:bg-gray-100 rounded-xl"
                     >
-                      <ArrowLeft className="w-4 h-4" />
+                      <ArrowLeft className="w-5 h-5" />
                     </Button>
                   </div>
-                  <div className="space-y-3">
-                    <div className="text-sm text-gray-600 truncate" data-testid="text-found-filename">
-                      <strong>Name:</strong> {foundFile.original_name}
+                  <div className="space-y-5">
+                    <div className="p-4 bg-gray-50 rounded-xl">
+                      <div className="text-base font-medium text-gray-700 truncate" data-testid="text-found-filename">
+                        <strong className="text-gray-900">Name:</strong> {foundFile.original_name}
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-600">
-                      <strong>Size:</strong> {(foundFile.size / 1024 / 1024).toFixed(2)} MB
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <strong>Expires:</strong> {new Date(foundFile.expires_at).toLocaleString()}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-3 bg-blue-50 rounded-lg">
+                        <div className="text-sm font-medium text-blue-900">Size</div>
+                        <div className="text-base font-bold text-blue-700">{(foundFile.size / 1024 / 1024).toFixed(2)} MB</div>
+                      </div>
+                      <div className="p-3 bg-orange-50 rounded-lg">
+                        <div className="text-sm font-medium text-orange-900">Expires</div>
+                        <div className="text-base font-bold text-orange-700">{new Date(foundFile.expires_at).toLocaleTimeString()}</div>
+                      </div>
                     </div>
                     <Button
                       onClick={handleDownload}
-                      className="w-full bg-primary text-white hover:bg-primary/90"
+                      className="w-full h-16 bg-primary text-white hover:bg-primary/90 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                       data-testid="button-download-file"
                     >
-                      <Download className="w-4 h-4 mr-2" />
+                      <Download className="w-6 h-6 mr-3" />
                       Download File
                     </Button>
                   </div>
@@ -428,53 +448,53 @@ export default function Home() {
           </div>
 
           {/* Right Panel - Introduction & Features */}
-          <div className="space-y-8">
+          <div className="space-y-10 lg:pl-8">
             {/* Main Introduction */}
-            <div>
-              <h1 className="text-4xl font-bold text-white mb-6">
+            <div className="text-center lg:text-left">
+              <h1 className="text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
                 Want to send larger files securely?
               </h1>
-              <p className="text-white/90 text-xl mb-8 leading-relaxed">
+              <p className="text-white/90 text-xl lg:text-2xl mb-10 leading-relaxed">
                 BOLT makes file sharing simple and secure. Upload files up to 200MB, share them with unique codes, and they automatically delete after 30 minutes for your security.
               </p>
-              <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold px-8 py-4 text-lg" data-testid="button-see-features">
+              <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold px-10 py-6 text-xl rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" data-testid="button-see-features">
                 See more features
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <ArrowRight className="w-6 h-6 ml-3" />
               </Button>
             </div>
 
             {/* Feature Illustration */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
-              <div className="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center mx-auto mb-4">
-                <Zap className="w-8 h-8 text-primary" />
+            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 text-center border border-white/20">
+              <div className="w-20 h-20 bg-white rounded-full shadow-xl flex items-center justify-center mx-auto mb-6">
+                <Zap className="w-10 h-10 text-primary" />
               </div>
-              <div className="bg-white rounded-lg shadow-sm p-4 max-w-sm mx-auto">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">Secure Transfer</span>
-                  <Shield className="w-4 h-4 text-green-500" />
+              <div className="bg-white rounded-2xl shadow-lg p-6 max-w-sm mx-auto">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-base font-medium text-gray-700">Secure Transfer</span>
+                  <Shield className="w-5 h-5 text-green-500" />
                 </div>
-                <div className="bg-gray-100 rounded h-2 mb-2">
-                  <div className="bg-primary rounded h-2 w-3/4"></div>
+                <div className="bg-gray-100 rounded-full h-3 mb-4">
+                  <div className="bg-primary rounded-full h-3 w-3/4 transition-all duration-500"></div>
                 </div>
-                <span className="text-xs text-gray-500">Upload complete • Code: ABC123</span>
+                <span className="text-sm font-medium text-gray-600">Upload complete • Code: ABC123</span>
               </div>
             </div>
 
             {/* Quick Features */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-              <h3 className="font-bold text-xl text-white mb-6">Why choose BOLT?</h3>
-              <div className="space-y-4">
-                <div className="flex items-center">
-                  <Shield className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="text-white text-lg">End-to-end encryption</span>
+            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
+              <h3 className="font-bold text-2xl text-white mb-8">Why choose BOLT?</h3>
+              <div className="space-y-6">
+                <div className="flex items-center p-4 bg-white/5 rounded-xl">
+                  <Shield className="w-8 h-8 text-green-400 mr-5" />
+                  <span className="text-white text-xl font-medium">End-to-end encryption</span>
                 </div>
-                <div className="flex items-center">
-                  <Clock className="w-6 h-6 text-blue-400 mr-4" />
-                  <span className="text-white text-lg">30-minute auto-deletion</span>
+                <div className="flex items-center p-4 bg-white/5 rounded-xl">
+                  <Clock className="w-8 h-8 text-blue-400 mr-5" />
+                  <span className="text-white text-xl font-medium">30-minute auto-deletion</span>
                 </div>
-                <div className="flex items-center">
-                  <Globe className="w-6 h-6 text-purple-400 mr-4" />
-                  <span className="text-white text-lg">Access from anywhere</span>
+                <div className="flex items-center p-4 bg-white/5 rounded-xl">
+                  <Globe className="w-8 h-8 text-purple-400 mr-5" />
+                  <span className="text-white text-xl font-medium">Access from anywhere</span>
                 </div>
               </div>
             </div>
@@ -484,9 +504,9 @@ export default function Home() {
 
 
         {/* Language Selector - Bottom Right */}
-        <div className="fixed bottom-4 right-4">
-          <Button variant="ghost" size="sm" className="text-white hover:text-gray-200">
-            <Globe className="w-4 h-4" />
+        <div className="fixed bottom-6 right-6">
+          <Button variant="ghost" size="lg" className="text-white hover:text-gray-200 bg-white/10 backdrop-blur-sm hover:bg-white/20 rounded-full p-4">
+            <Globe className="w-5 h-5" />
           </Button>
         </div>
       </div>
