@@ -152,7 +152,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -160,13 +160,13 @@ export default function Dashboard() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                  <User className="w-6 h-6 text-white" />
+              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center border-2 border-border">
+                  <User className="w-6 h-6 text-primary-foreground" />
                 </div>
                 Welcome back, {user.username}
               </h1>
-              <p className="text-gray-600 dark:text-gray-300 mt-2">
+              <p className="text-muted-foreground mt-2">
                 Manage your files and track your sharing activity
               </p>
             </div>

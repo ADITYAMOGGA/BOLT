@@ -89,7 +89,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Animated Background Objects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Floating geometric shapes */}
@@ -114,10 +114,10 @@ export default function AuthPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/">
             <div className="flex items-center space-x-3 cursor-pointer">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center border-2 border-border">
+                <Zap className="w-5 h-5 text-primary-foreground" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">BOLT</h1>
+              <h1 className="text-2xl font-bold text-foreground">BOLT</h1>
             </div>
           </Link>
           
@@ -135,41 +135,41 @@ export default function AuthPage() {
         <div className="hidden lg:flex lg:w-1/2 relative">
           <div className="flex flex-col justify-center px-16 py-24 relative z-10">
             <div className="max-w-lg">
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-4xl font-bold text-foreground mb-6">
                 Fast & Secure File Sharing
               </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
                 Upload files up to 200MB and share them instantly with secure links. Your files, your control.
               </p>
               
               <div className="space-y-6">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center border-2 border-border">
+                    <Shield className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">Secure Transfer</h3>
-                    <p className="text-gray-600 dark:text-gray-300">End-to-end encrypted file sharing</p>
+                    <h3 className="font-semibold text-foreground">Secure Transfer</h3>
+                    <p className="text-muted-foreground">End-to-end encrypted file sharing</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900 rounded-lg flex items-center justify-center">
-                    <Rocket className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                  <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center border-2 border-border">
+                    <Rocket className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">Auto-Delete</h3>
-                    <p className="text-gray-600 dark:text-gray-300">Files automatically expire in 24 hours</p>
+                    <h3 className="font-semibold text-foreground">Auto-Delete</h3>
+                    <p className="text-muted-foreground">Files automatically expire in 24 hours</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
-                    <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center border-2 border-border">
+                    <Users className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">Track Files</h3>
-                    <p className="text-gray-600 dark:text-gray-300">Keep track of your uploads with an account</p>
+                    <h3 className="font-semibold text-foreground">Track Files</h3>
+                    <p className="text-muted-foreground">Keep track of your uploads with an account</p>
                   </div>
                 </div>
               </div>
@@ -180,7 +180,7 @@ export default function AuthPage() {
         {/* Right Side - Auth Form */}
         <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-24 relative z-10">
           <div className="w-full max-w-md">
-            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/30 p-8 transition-all duration-700 hover:shadow-3xl hover:scale-[1.02]">
+            <div className="bg-card/90 backdrop-blur-xl rounded-2xl shadow-2xl border-2 border-border p-8 transition-all duration-700 hover:shadow-3xl hover:scale-[1.02]">
               {/* Header */}
               <div className="text-center mb-8">
                 <div className="flex items-center justify-center space-x-2 mb-4">
@@ -190,10 +190,10 @@ export default function AuthPage() {
                     <UserPlus className="w-8 h-8 text-emerald-600" />
                   )}
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-3xl font-bold text-foreground">
                   {mode === 'login' ? 'Welcome Back' : 'Create Account'}
                 </h2>
-                <p className="text-gray-600 dark:text-gray-300 mt-2">
+                <p className="text-muted-foreground mt-2">
                   {mode === 'login' 
                     ? 'Sign in to access your files' 
                     : 'Join to keep track of your uploads'
@@ -202,13 +202,13 @@ export default function AuthPage() {
               </div>
 
               {/* Mode Toggle */}
-              <div className="flex bg-gray-100/60 dark:bg-slate-700/60 backdrop-blur-sm rounded-xl p-1 mb-6 border border-gray-200/50 dark:border-slate-600/50">
+              <div className="flex bg-muted/60 backdrop-blur-sm rounded-xl p-1 mb-6 border-2 border-border">
                 <button
                   onClick={() => switchMode('login')}
                   className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 transform ${
                     mode === 'login'
-                      ? 'bg-white dark:bg-slate-600 text-gray-900 dark:text-white shadow-lg scale-105 border border-blue-200/50 dark:border-blue-500/30'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-600/50'
+                      ? 'bg-card text-foreground shadow-lg scale-105 border-2 border-primary/30'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
                   }`}
                   data-testid="tab-login"
                 >
@@ -218,8 +218,8 @@ export default function AuthPage() {
                   onClick={() => switchMode('signup')}
                   className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 transform ${
                     mode === 'signup'
-                      ? 'bg-white dark:bg-slate-600 text-gray-900 dark:text-white shadow-lg scale-105 border border-emerald-200/50 dark:border-emerald-500/30'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-600/50'
+                      ? 'bg-card text-foreground shadow-lg scale-105 border-2 border-primary/30'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
                   }`}
                   data-testid="tab-signup"
                 >
@@ -280,7 +280,7 @@ export default function AuthPage() {
                     />
                         <Button 
                           type="submit" 
-                          className="w-full h-12 text-lg font-medium bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl" 
+                          className="w-full h-12 text-lg font-medium bg-primary hover:bg-primary/90 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl border-2 border-border" 
                           disabled={isLoading}
                           data-testid="button-login-submit"
                         >
@@ -355,7 +355,7 @@ export default function AuthPage() {
                     />
                         <Button 
                           type="submit" 
-                          className="w-full h-12 text-lg font-medium bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl" 
+                          className="w-full h-12 text-lg font-medium bg-primary hover:bg-primary/90 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl border-2 border-border" 
                           disabled={isLoading}
                           data-testid="button-signup-submit"
                         >
@@ -370,11 +370,11 @@ export default function AuthPage() {
 
               {/* Footer */}
               <div className="mt-8 text-center">
-                <p className="text-sm text-gray-600 dark:text-gray-300">
+                <p className="text-sm text-muted-foreground">
                   {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
                   <button
                     onClick={() => switchMode(mode === 'login' ? 'signup' : 'login')}
-                    className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 transition-colors"
+                    className="font-medium text-primary hover:text-primary/80 transition-colors"
                     data-testid="switch-mode-link"
                   >
                     {mode === 'login' ? 'Sign up' : 'Sign in'}

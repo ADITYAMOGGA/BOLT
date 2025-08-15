@@ -13,9 +13,9 @@ const ThemeProviderContext = createContext<ThemeProviderContextType | undefined>
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-      return (localStorage.getItem('theme') as Theme) || 'light';
+      return (localStorage.getItem('theme') as Theme) || 'dark';
     }
-    return 'light';
+    return 'dark';
   });
 
   useEffect(() => {
@@ -23,6 +23,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
     localStorage.setItem('theme', theme);
+    // Ensure dark mode is applied immediately on first load
+    if (theme === 'dark') {
+      root.style.colorScheme = 'dark';
+    } else {
+      root.style.colorScheme = 'light';
+    }
   }, [theme]);
 
   const toggleTheme = () => {
