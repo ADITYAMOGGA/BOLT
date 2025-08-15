@@ -199,25 +199,21 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <Navigation />
       
+      {/* Top Announcement Bar */}
+      <div className="bg-accent border-2 border-border py-3">
+        <div className="container mx-auto px-4 text-center">
+          <span className="text-sm font-medium text-accent-foreground">🎉 New plans are newly released!</span>
+        </div>
+      </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-20">
-        <div className="max-w-6xl mx-auto">
-          {/* Hero Section */}
-          <div className="text-center mb-16">
-            <h1 className="text-6xl font-bold text-foreground mb-6">
-              Share Files Securely
-            </h1>
-            <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-              Upload files up to 200MB and share them with unique codes. Files automatically delete after 30 minutes for your security.
-            </p>
-          </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 max-w-6xl mx-auto">
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-4xl mx-auto">
-          
-          {/* Send Section */}
-          <div className="space-y-6">
-            <div className="bg-card rounded-3xl border border-border shadow-lg p-8 hover:shadow-xl transition-all duration-300" style={{ minHeight: uploadStep === 'initial' ? '200px' : 'auto' }}>
+          {/* Left Panel - Core Action Area */}
+          <div className="space-y-8 w-full max-w-lg mx-auto lg:mx-0">
+            {/* Send Box - Dynamic content based on upload state */}
+            <div className="bg-white rounded-2xl border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '160px' : 'auto' }}>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -229,14 +225,13 @@ export default function Home() {
               
               {uploadStep === 'initial' && (
                 <>
-                  <h2 className="text-3xl font-bold text-foreground mb-8 text-center">Upload File</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Send</h2>
                   <div 
-                    className="cursor-pointer hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center h-32 bg-primary/5 rounded-2xl border-2 border-dashed border-primary/30 hover:border-primary hover:bg-primary/10"
+                    className="cursor-pointer hover:scale-105 transition-all duration-300 flex items-center justify-center h-20 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl border-2 border-dashed border-primary/30 hover:border-primary/60"
                     onClick={() => fileInputRef.current?.click()}
                     data-testid="button-send"
                   >
-                    <Plus className="w-20 h-20 text-primary mb-2" />
-                    <span className="text-primary font-medium">Click to upload</span>
+                    <Plus className="w-16 h-16 text-primary" />
                   </div>
                 </>
               )}
@@ -373,29 +368,27 @@ export default function Home() {
               )}
             </div>
 
-          </div>
-          
-          {/* Receive Section */}
-          <div className="space-y-6">
-            <div className="bg-card rounded-3xl border border-border shadow-lg p-8 hover:shadow-xl transition-all duration-300" style={{ minHeight: receiveStep === 'initial' ? '200px' : 'auto' }}>
+            {/* Receive Box - Dynamic content based on receive state */}
+            <div className="bg-white rounded-2xl border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '160px' : 'auto' }}>
               {receiveStep === 'initial' && (
                 <>
-                  <h2 className="text-3xl font-bold text-foreground mb-8 text-center">Download File</h2>
-                  <form onSubmit={handleCodeSubmit} className="space-y-6">
-                    <Input
-                      id="download-code"
-                      type="text"
-                      placeholder="Enter 6-digit code"
-                      value={downloadCode}
-                      onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
-                      maxLength={6}
-                      className="text-xl font-mono text-center bg-muted border border-border focus:border-primary rounded-xl h-16 tracking-widest"
-                      data-testid="input-download-code"
-                    />
-                    <Button type="submit" className="w-full h-16 text-lg font-semibold" data-testid="button-search">
-                      <Download className="w-5 h-5 mr-2" />
-                      Download
-                    </Button>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Receive</h2>
+                  <form onSubmit={handleCodeSubmit}>
+                    <div className="flex items-center space-x-4">
+                      <Input
+                        id="download-code"
+                        type="text"
+                        placeholder="Enter 6-digit key"
+                        value={downloadCode}
+                        onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
+                        maxLength={6}
+                        className="flex-1 text-lg font-medium text-gray-700 bg-gray-50 border-2 border-gray-200 focus:border-primary rounded-xl h-14 px-4"
+                        data-testid="input-download-code"
+                      />
+                      <Button type="submit" variant="default" size="lg" className="px-6 h-14 bg-primary hover:bg-primary/90" data-testid="button-search">
+                        <Download className="w-5 h-5" />
+                      </Button>
+                    </div>
                   </form>
                 </>
               )}
@@ -454,26 +447,55 @@ export default function Home() {
             </div>
           </div>
 
-          </div>
-          
-          {/* Features Section */}
-          <div className="mt-20">
-            <h2 className="text-4xl font-bold text-center text-foreground mb-12">Why choose BOLT?</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center p-8 bg-card rounded-2xl border border-border hover:shadow-lg transition-shadow">
-                <Shield className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">Secure</h3>
-                <p className="text-muted-foreground">End-to-end encryption for all files</p>
+          {/* Right Panel - Introduction & Features */}
+          <div className="space-y-10 lg:pl-8">
+            {/* Main Introduction */}
+            <div className="text-center lg:text-left p-6 border-2 border-border bg-background/40 rounded-xl">
+              <h1 className="text-5xl lg:text-6xl font-bold text-foreground mb-8 leading-tight">
+                Want to send larger files securely?
+              </h1>
+              <p className="text-foreground/80 text-xl lg:text-2xl mb-10 leading-relaxed">
+                BOLT makes file sharing simple and secure. Upload files up to 200MB, share them with unique codes, and they automatically delete after 30 minutes for your security.
+              </p>
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold px-10 py-6 text-xl rounded-xl border-2 border-border shadow-lg hover:shadow-xl transition-all duration-300" data-testid="button-see-features">
+                See more features
+                <ArrowRight className="w-6 h-6 ml-3" />
+              </Button>
+            </div>
+
+            {/* Feature Illustration */}
+            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 text-center border-2 border-border">
+              <div className="w-20 h-20 bg-primary rounded-full shadow-xl flex items-center justify-center mx-auto mb-6 border-2 border-border">
+                <Zap className="w-10 h-10 text-primary-foreground" />
               </div>
-              <div className="text-center p-8 bg-card rounded-2xl border border-border hover:shadow-lg transition-shadow">
-                <Clock className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">Temporary</h3>
-                <p className="text-muted-foreground">Auto-delete after 30 minutes</p>
+              <div className="bg-white rounded-2xl border-2 border-border shadow-lg p-6 max-w-sm mx-auto">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-base font-medium text-foreground">Secure Transfer</span>
+                  <Shield className="w-5 h-5 text-green-500" />
+                </div>
+                <div className="bg-muted rounded-full h-3 mb-4 border border-border">
+                  <div className="bg-primary rounded-full h-3 w-3/4 transition-all duration-500"></div>
+                </div>
+                <span className="text-sm font-medium text-muted-foreground">Upload complete • Code: ABC123</span>
               </div>
-              <div className="text-center p-8 bg-card rounded-2xl border border-border hover:shadow-lg transition-shadow">
-                <Globe className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">Accessible</h3>
-                <p className="text-muted-foreground">Access from anywhere</p>
+            </div>
+
+            {/* Quick Features */}
+            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 border-2 border-border">
+              <h3 className="font-bold text-2xl text-foreground mb-8">Why choose BOLT?</h3>
+              <div className="space-y-6">
+                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
+                  <Shield className="w-8 h-8 text-green-600 mr-5" />
+                  <span className="text-foreground text-xl font-medium">End-to-end encryption</span>
+                </div>
+                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
+                  <Clock className="w-8 h-8 text-blue-600 mr-5" />
+                  <span className="text-foreground text-xl font-medium">30-minute auto-deletion</span>
+                </div>
+                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
+                  <Globe className="w-8 h-8 text-purple-600 mr-5" />
+                  <span className="text-foreground text-xl font-medium">Access from anywhere</span>
+                </div>
               </div>
             </div>
           </div>
@@ -481,6 +503,12 @@ export default function Home() {
 
 
 
+        {/* Language Selector - Bottom Right */}
+        <div className="fixed bottom-6 right-6">
+          <Button variant="ghost" size="lg" className="text-foreground hover:text-primary bg-background/80 backdrop-blur-sm hover:bg-background/90 rounded-full p-4 border-2 border-border">
+            <Globe className="w-5 h-5" />
+          </Button>
+        </div>
       </div>
     </div>
   );
