@@ -156,13 +156,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get user ID from session if logged in
       const userId = (req as any).session?.userId || null;
 
+      // Parse additional form data for enhanced features
+      const password = req.body.password || null;
+      const maxDownloads = req.body.maxDownloads ? parseInt(req.body.maxDownloads) : null;
+      const expirationType = req.body.expirationType || '24h';
+      const customMessage = req.body.customMessage || null;
+
+      // Validate max downloads
+      if (maxDownloads && (maxDownloads < 1 || maxDownloads > 1000)) {
+        return res.status(400).json({ message: "Max downloads must be between 1 and 1000" });
+      }
+
+      // Validate expiration type
+      const validExpirationTypes = ['1h', '6h', '24h', '7d', '30d', 'never'];
+      if (!validExpirationTypes.includes(expirationType)) {
+        return res.status(400).json({ message: "Invalid expiration type" });
+      }
+
       const fileData = {
         originalName: req.file.originalname,
         mimeType: req.file.mimetype,
         size: req.file.size,
         filename: req.file.filename,
         filePath: req.file.path, // Local file path for Cloudinary upload
-        password: req.body.password || null,
+        password: password,
+        passwordProtected: password ? 1 : 0, // SQLite boolean as integer
+        maxDownloads: maxDownloads,
+        expirationType: expirationType,
+        customMessage: customMessage,
         userId: userId, // Use session user ID for logged in users
       };
 
@@ -182,8 +203,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         size: file.size,
         mime_type: file.mimeType,
         expires_at: file.expiresAt,
+        expiration_type: file.expirationType,
         download_count: file.downloadCount,
+        max_downloads: file.maxDownloads,
         hasPassword: !!file.password,
+        custom_message: file.customMessage,
       });
     } catch (error) {
       console.error("Upload error:", error);
@@ -208,8 +232,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         size: file.size,
         mime_type: file.mimeType,
         expires_at: file.expiresAt,
+        expiration_type: file.expirationType,
         download_count: file.downloadCount,
-        hasPassword: !!file.password,
+        max_downloads: file.maxDownloads,
+        hasPassword: !!file.passwordHash,
+        password_protected: !!file.passwordProtected,
+        custom_message: file.customMessage,
         filename: file.filename, // Include Cloudinary public_id for preview generation
       });
     } catch (error) {
@@ -283,11 +311,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check password if file is protected
-      if (file.password && file.password !== password) {
-        return res.status(401).json({ message: "Invalid password" });
+      if (file.passwordProtected && file.passwordHash) {
+        if (!password) {
+          return res.status(401).json({ message: "Password required" });
+        }
+        const isPasswordValid = await bcrypt.compare(password, file.passwordHash);
+        if (!isPasswordValid) {
+          return res.status(401).json({ message: "Invalid password" });
+        }
       }
 
-      await storage.incrementDownloadCount(file.id);
+      // Check download count limit
+      const canDownload = await storage.incrementDownloadCount(file.id);
+      if (!canDownload) {
+        return res.status(403).json({ message: "Download limit reached" });
+      }
 
       // Using Supabase storage with Cloudinary
       {

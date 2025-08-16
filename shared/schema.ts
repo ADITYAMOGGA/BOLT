@@ -18,8 +18,13 @@ export const files = pgTable("files", {
   mimeType: text("mime_type").notNull(),
   size: integer("size").notNull(),
   code: varchar("code", { length: 6 }).notNull().unique(),
-  password: text("password"), // Optional password for protected files
+  password: text("password"), // Legacy - keeping for compatibility
+  passwordHash: text("password_hash"), // Hashed password for security
+  passwordProtected: integer("password_protected").notNull().default(0), // Boolean as integer
+  maxDownloads: integer("max_downloads"), // Optional download limit
   downloadCount: integer("download_count").notNull().default(0),
+  expirationType: varchar("expiration_type", { length: 20 }).notNull().default('24h'), // 1h, 6h, 24h, 7d, 30d, never
+  customMessage: text("custom_message"), // Custom message for recipients
   userId: varchar("user_id"), // Optional - files can be anonymous or owned by user
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
   expiresAt: timestamp("expires_at").notNull(),
@@ -44,7 +49,16 @@ export const insertFileSchema = createInsertSchema(files).pick({
   mimeType: true,
   size: true,
   password: true,
+  passwordProtected: true,
+  maxDownloads: true,
+  expirationType: true,
+  customMessage: true,
   userId: true,
+}).extend({
+  password: z.string().optional(),
+  maxDownloads: z.number().min(1).max(1000).optional(),
+  expirationType: z.enum(['1h', '6h', '24h', '7d', '30d', 'never']).default('24h'),
+  customMessage: z.string().max(500).optional(),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

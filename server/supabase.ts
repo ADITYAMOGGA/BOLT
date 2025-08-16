@@ -51,7 +51,33 @@ export class SupabaseStorage implements IStorage {
     const id = randomUUID();
     const code = this.generateCode();
     const now = new Date();
-    const expiresAt = new Date(now.getTime() + 30 * 60 * 1000); // 30 minutes
+    
+    // Calculate expiration based on expirationType
+    let expiresAt: Date;
+    const expirationType = insertFile.expirationType || '24h';
+    
+    switch (expirationType) {
+      case '1h':
+        expiresAt = new Date(now.getTime() + 1 * 60 * 60 * 1000);
+        break;
+      case '6h':
+        expiresAt = new Date(now.getTime() + 6 * 60 * 60 * 1000);
+        break;
+      case '24h':
+        expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        break;
+      case '7d':
+        expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        break;
+      case '30d':
+        expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+        break;
+      case 'never':
+        expiresAt = new Date('2099-12-31T23:59:59Z'); // Far future date
+        break;
+      default:
+        expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Default to 24h
+    }
 
     // Debug logging can be removed in production
     // console.log(`CreateFile called with:`, insertFile);
@@ -92,6 +118,11 @@ export class SupabaseStorage implements IStorage {
         size: insertFile.size,
         code,
         password: insertFile.password || null,
+        password_hash: insertFile.password ? await import('bcryptjs').then(bcrypt => bcrypt.hash(insertFile.password!, 10)) : null,
+        password_protected: insertFile.passwordProtected || 0,
+        max_downloads: insertFile.maxDownloads || null,
+        expiration_type: insertFile.expirationType || '24h',
+        custom_message: insertFile.customMessage || null,
         user_id: insertFile.userId || null,
         expires_at: expiresAt.toISOString(),
       })
@@ -108,7 +139,12 @@ export class SupabaseStorage implements IStorage {
       size: data.size,
       code: data.code,
       password: data.password,
+      passwordHash: data.password_hash,
+      passwordProtected: data.password_protected,
+      maxDownloads: data.max_downloads,
       downloadCount: data.download_count,
+      expirationType: data.expiration_type,
+      customMessage: data.custom_message,
       userId: data.user_id,
       createdAt: new Date(data.created_at),
       expiresAt: new Date(data.expires_at),
@@ -126,6 +162,11 @@ export class SupabaseStorage implements IStorage {
     if (error && error.code !== 'PGRST116') throw error;
     if (!data) return undefined;
 
+    // Check download count limit
+    if (data.max_downloads && data.download_count >= data.max_downloads) {
+      return undefined; // File has reached download limit
+    }
+
     return {
       id: data.id,
       filename: data.filename,
@@ -134,7 +175,12 @@ export class SupabaseStorage implements IStorage {
       size: data.size,
       code: data.code,
       password: data.password,
+      passwordHash: data.password_hash,
+      passwordProtected: data.password_protected,
+      maxDownloads: data.max_downloads,
       downloadCount: data.download_count,
+      expirationType: data.expiration_type,
+      customMessage: data.custom_message,
       userId: data.user_id,
       createdAt: new Date(data.created_at),
       expiresAt: new Date(data.expires_at),
@@ -160,23 +206,35 @@ export class SupabaseStorage implements IStorage {
       size: data.size,
       code: data.code,
       password: data.password,
+      passwordHash: data.password_hash,
+      passwordProtected: data.password_protected,
+      maxDownloads: data.max_downloads,
       downloadCount: data.download_count,
+      expirationType: data.expiration_type,
+      customMessage: data.custom_message,
       userId: data.user_id,
       createdAt: new Date(data.created_at),
       expiresAt: new Date(data.expires_at),
     };
   }
 
-  async incrementDownloadCount(id: string): Promise<void> {
-    // Get current count first, then increment
+  async incrementDownloadCount(id: string): Promise<boolean> {
+    // Get current count first, then check limits
     const file = await this.getFileById(id);
-    if (!file) return;
+    if (!file) return false;
+    
+    // Check download count limit
+    if (file.maxDownloads && file.downloadCount >= file.maxDownloads) {
+      return false; // Download limit reached
+    }
     
     const { error } = await supabase!
       .from('files')
       .update({ download_count: file.downloadCount + 1 })
       .eq('id', id);
+    
     if (error) throw error;
+    return true;
   }
 
   async deleteFile(id: string): Promise<void> {

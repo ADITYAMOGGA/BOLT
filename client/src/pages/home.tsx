@@ -4,6 +4,7 @@ import { useLocation } from 'wouter';
 import { useAuth } from '@/contexts/auth-context';
 import { useLanguage } from '@/contexts/language-context';
 import { Navigation } from '@/components/navigation';
+import { UploadOptions, type UploadOptions as UploadOptionsType } from '@/components/upload-options';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Download, Eye, ArrowRight, Globe, Mail, Shield, Clock, Zap, ArrowLeft, Link, QrCode, Copy, CheckCircle } from 'lucide-react';
@@ -23,6 +24,7 @@ export default function Home() {
   const [uploadedFileData, setUploadedFileData] = useState<any>(null);
   const [sharingMethod, setSharingMethod] = useState<'code' | 'link' | 'email'>('code');
   const [timeLeft, setTimeLeft] = useState<number>(30 * 60); // 30 minutes in seconds
+  const [showUploadOptions, setShowUploadOptions] = useState(false);
   
   // Upload progress state
   const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -35,10 +37,24 @@ export default function Home() {
   const [foundFile, setFoundFile] = useState<any>(null);
 
   const uploadMutation = useMutation({
-    mutationFn: async (file: File) => {
+    mutationFn: async ({ file, options }: { file: File; options?: UploadOptionsType }) => {
       return new Promise((resolve, reject) => {
         const formData = new FormData();
         formData.append('file', file);
+        
+        // Add upload options to form data
+        if (options?.password) {
+          formData.append('password', options.password);
+        }
+        if (options?.maxDownloads) {
+          formData.append('maxDownloads', options.maxDownloads.toString());
+        }
+        if (options?.expirationType) {
+          formData.append('expirationType', options.expirationType);
+        }
+        if (options?.customMessage) {
+          formData.append('customMessage', options.customMessage);
+        }
         
         const xhr = new XMLHttpRequest();
         
@@ -108,12 +124,26 @@ export default function Home() {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      setUploadStep('uploading');
-      setUploadStartTime(Date.now());
-      setUploadProgress(0);
-      setUploadSpeed(0);
-      setUploadedBytes(0);
-      uploadMutation.mutate(file);
+      setShowUploadOptions(true);
+    }
+  };
+
+  const handleUploadWithOptions = (file: File, options: UploadOptionsType) => {
+    setShowUploadOptions(false);
+    setUploadStep('uploading');
+    setUploadStartTime(Date.now());
+    setUploadProgress(0);
+    setUploadSpeed(0);
+    setUploadedBytes(0);
+    uploadMutation.mutate({ file, options });
+  };
+
+  const handleUploadCancel = () => {
+    setShowUploadOptions(false);
+    setSelectedFile(null);
+    // Reset the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -736,10 +766,16 @@ export default function Home() {
             </div>
           </div>
         </div>
-
-
-
       </div>
+
+      {/* Upload Options Modal */}
+      <UploadOptions
+        isOpen={showUploadOptions}
+        onClose={handleUploadCancel}
+        onUpload={handleUploadWithOptions}
+        file={selectedFile}
+        isUploading={uploadMutation.isPending}
+      />
     </div>
   );
 }

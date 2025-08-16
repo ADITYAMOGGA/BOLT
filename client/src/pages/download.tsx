@@ -197,12 +197,37 @@ export default function DownloadPage() {
                 </div>
               </div>
               
+              {/* Custom Message */}
+              {file.custom_message && (
+                <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+                  <div className="flex items-center justify-center space-x-2 text-blue-700 dark:text-blue-300 mb-2">
+                    <MessageSquare className="w-5 h-5" />
+                    <span className="font-medium">Message from sender</span>
+                  </div>
+                  <p className="text-blue-800 dark:text-blue-200 text-center italic">
+                    "{file.custom_message}"
+                  </p>
+                </div>
+              )}
+
               {/* Password Protection Notice */}
               {file.hasPassword && (
                 <div className="mb-6 p-4 bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-xl">
                   <div className="flex items-center justify-center space-x-2 text-orange-700 dark:text-orange-300">
                     <Lock className="w-5 h-5" />
                     <span className="font-medium">This file is password protected</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Download Limit Warning */}
+              {file.max_downloads && (
+                <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 rounded-xl">
+                  <div className="flex items-center justify-center space-x-2 text-yellow-700 dark:text-yellow-300">
+                    <Users className="w-5 h-5" />
+                    <span className="font-medium">
+                      Downloads remaining: {file.max_downloads - file.download_count}
+                    </span>
                   </div>
                 </div>
               )}
@@ -287,17 +312,21 @@ export default function DownloadPage() {
               </Button>
               
               {/* File Details */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-300">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600 dark:text-gray-300">
                 <div className="flex items-center justify-center space-x-2">
                   <Calendar className="w-4 h-4" />
                   <span>
-                    Expires in <strong className="text-gray-900 dark:text-white">{getTimeLeft(file.expiresAt)}</strong>
+                    {file.expiration_type === 'never' ? (
+                      <span>Never expires</span>
+                    ) : (
+                      <>Expires in <strong className="text-gray-900 dark:text-white">{getTimeLeft(file.expires_at)}</strong></>
+                    )}
                   </span>
                 </div>
                 <div className="flex items-center justify-center space-x-2">
                   <HardDrive className="w-4 h-4" />
                   <span>
-                    Downloaded <strong className="text-gray-900 dark:text-white">{file.downloadCount}</strong> time{file.downloadCount !== 1 ? 's' : ''}
+                    Downloaded <strong className="text-gray-900 dark:text-white">{file.download_count}</strong> time{file.download_count !== 1 ? 's' : ''}
                   </span>
                 </div>
                 <div className="flex items-center justify-center space-x-2">
@@ -306,6 +335,14 @@ export default function DownloadPage() {
                     {file.hasPassword ? 'Protected' : 'No password'}
                   </span>
                 </div>
+                {file.max_downloads && (
+                  <div className="flex items-center justify-center space-x-2">
+                    <Users className="w-4 h-4" />
+                    <span>
+                      Limit: <strong className="text-gray-900 dark:text-white">{file.max_downloads}</strong>
+                    </span>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
