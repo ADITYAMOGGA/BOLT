@@ -248,38 +248,38 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background relative">
       {/* Layout Grid Lines */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-px h-full bg-border/20"></div>
-        <div className="absolute top-0 left-1/2 w-px h-full bg-border/30"></div>
-        <div className="absolute top-0 left-3/4 w-px h-full bg-border/20"></div>
-        <div className="absolute top-1/3 left-0 w-full h-px bg-border/20"></div>
-        <div className="absolute top-2/3 left-0 w-full h-px bg-border/20"></div>
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
+        <div className="absolute top-0 left-1/4 w-px h-full bg-border/30"></div>
+        <div className="absolute top-0 left-1/2 w-px h-full bg-border/50"></div>
+        <div className="absolute top-0 left-3/4 w-px h-full bg-border/30"></div>
+        <div className="absolute top-1/3 left-0 w-full h-px bg-border/30"></div>
+        <div className="absolute top-2/3 left-0 w-full h-px bg-border/30"></div>
       </div>
       <Navigation />
       
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 animate-fade-in">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 max-w-7xl mx-auto relative">
           {/* Premium Central Divider */}
-          <div className="hidden lg:block absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-border/30 to-transparent"></div>
-          <div className="hidden lg:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-background border-2 border-border rounded-full flex items-center justify-center">
-            <div className="w-2 h-2 bg-primary rounded-full"></div>
+          <div className="hidden lg:block absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-border/50 to-transparent"></div>
+          <div className="hidden lg:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-card border-2 border-primary/50 rounded-full flex items-center justify-center shadow-lg">
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
           </div>
           
           {/* Left Panel - Core Action Area */}
-          <div className="space-y-8 w-full max-w-sm mx-auto lg:mx-0 lg:ml-[-2rem]">
+          <div className="space-y-8 w-full max-w-sm mx-auto lg:mx-0 lg:ml-[-2rem] animate-slide-in-left">
             {/* Section Label */}
             <div className="flex items-center mb-6">
               <div className="w-12 h-px bg-primary mr-4"></div>
-              <span className="text-sm font-semibold text-primary uppercase tracking-wider">Actions</span>
-              <div className="flex-1 h-px bg-border/30 ml-4"></div>
+              <span className="text-sm font-semibold text-foreground uppercase tracking-wider">Actions</span>
+              <div className="flex-1 h-px bg-border/50 ml-4"></div>
             </div>
             {/* Send Box - Dynamic content based on upload state */}
-            <div className="bg-card backdrop-blur-sm rounded-2xl border border-border/50 shadow-2xl p-8 w-full transition-all duration-500 hover:shadow-3xl hover:border-primary/30 hover:-translate-y-1 relative overflow-hidden" style={{ minHeight: uploadStep === 'initial' ? '240px' : 'auto' }}>
+            <div className="bg-card backdrop-blur-sm rounded-2xl border-2 border-border shadow-2xl p-8 w-full transition-all duration-500 hover:shadow-3xl hover:border-primary/50 hover:-translate-y-1 relative overflow-hidden" style={{ minHeight: uploadStep === 'initial' ? '240px' : 'auto' }}>
               {/* Card Accent */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/50 to-transparent"></div>
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/70 to-transparent"></div>
+              <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -291,22 +291,22 @@ export default function Home() {
               
               {uploadStep === 'initial' && (
                 <>
-                  <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center justify-between mb-8 relative z-10">
                     <div>
                       <h2 className="text-3xl font-bold text-foreground mb-2">Send</h2>
-                      <p className="text-sm text-muted-foreground">Upload files up to 200MB</p>
+                      <p className="text-sm text-foreground/70">Upload files up to 200MB</p>
                     </div>
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
                       <Plus className="w-6 h-6 text-primary" />
                     </div>
                   </div>
                   <div 
-                    className="group cursor-pointer transition-all duration-500 flex items-center justify-center h-28 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 rounded-2xl border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-gradient-to-br hover:from-primary/10 hover:via-primary/20 hover:to-primary/10 relative overflow-hidden"
+                    className="group cursor-pointer transition-all duration-500 flex items-center justify-center h-28 bg-gradient-to-br from-primary/10 via-primary/15 to-primary/10 rounded-2xl border-2 border-dashed border-primary/50 hover:border-primary hover:bg-gradient-to-br hover:from-primary/15 hover:via-primary/25 hover:to-primary/15 relative overflow-hidden z-10"
                     onClick={() => fileInputRef.current?.click()}
                     data-testid="button-send"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                    <Plus className="w-20 h-20 text-primary group-hover:scale-110 transition-transform duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-card/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    <Plus className="w-20 h-20 text-primary group-hover:scale-110 transition-transform duration-300 relative z-10" />
                   </div>
                 </>
               )}
@@ -483,18 +483,18 @@ export default function Home() {
             </div>
 
             {/* Receive Box - Dynamic content based on receive state */}
-            <div className="bg-card backdrop-blur-sm rounded-2xl border border-border/50 shadow-2xl p-8 w-full transition-all duration-500 hover:shadow-3xl hover:border-primary/30 hover:-translate-y-1 relative overflow-hidden" style={{ minHeight: receiveStep === 'initial' ? '240px' : 'auto' }}>
+            <div className="bg-card backdrop-blur-sm rounded-2xl border-2 border-border shadow-2xl p-8 w-full transition-all duration-500 hover:shadow-3xl hover:border-primary/50 hover:-translate-y-1 relative overflow-hidden" style={{ minHeight: receiveStep === 'initial' ? '240px' : 'auto' }}>
               {/* Card Accent */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/70 via-primary to-primary/70"></div>
-              <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
               {receiveStep === 'initial' && (
                 <>
-                  <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center justify-between mb-8 relative z-10">
                     <div>
                       <h2 className="text-3xl font-bold text-foreground mb-2">Receive</h2>
-                      <p className="text-sm text-muted-foreground">Enter 6-character code</p>
+                      <p className="text-sm text-foreground/70">Enter 6-character code</p>
                     </div>
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
                       <Download className="w-6 h-6 text-primary" />
                     </div>
                   </div>
@@ -573,26 +573,26 @@ export default function Home() {
           </div>
 
           {/* Right Panel - Introduction & Features */}
-          <div className="space-y-12 lg:pl-12 border-l border-border/20 lg:border-l lg:pl-16 relative">
+          <div className="space-y-12 lg:pl-12 border-l border-border/30 lg:border-l lg:pl-16 relative animate-slide-in-right">
             {/* Section Label */}
             <div className="flex items-center mb-8">
               <div className="w-12 h-px bg-primary mr-4"></div>
-              <span className="text-sm font-semibold text-primary uppercase tracking-wider">Overview</span>
-              <div className="flex-1 h-px bg-border/30 ml-4"></div>
+              <span className="text-sm font-semibold text-foreground uppercase tracking-wider">Overview</span>
+              <div className="flex-1 h-px bg-border/50 ml-4"></div>
             </div>
             {/* Stats Bar */}
             <div className="grid grid-cols-3 gap-6 mb-12">
-              <div className="text-center p-4 bg-card/50 backdrop-blur-sm rounded-xl border border-border/30">
+              <div className="text-center p-4 bg-card backdrop-blur-sm rounded-xl border border-border shadow-lg animate-stagger opacity-0">
                 <div className="text-2xl font-bold text-primary mb-1">256-bit</div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wide">Encryption</div>
+                <div className="text-xs text-foreground/70 uppercase tracking-wide">Encryption</div>
               </div>
-              <div className="text-center p-4 bg-card/50 backdrop-blur-sm rounded-xl border border-border/30">
+              <div className="text-center p-4 bg-card backdrop-blur-sm rounded-xl border border-border shadow-lg animate-stagger opacity-0">
                 <div className="text-2xl font-bold text-primary mb-1">200MB</div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wide">Max Size</div>
+                <div className="text-xs text-foreground/70 uppercase tracking-wide">Max Size</div>
               </div>
-              <div className="text-center p-4 bg-card/50 backdrop-blur-sm rounded-xl border border-border/30">
+              <div className="text-center p-4 bg-card backdrop-blur-sm rounded-xl border border-border shadow-lg animate-stagger opacity-0">
                 <div className="text-2xl font-bold text-primary mb-1">24hrs</div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wide">Auto Delete</div>
+                <div className="text-xs text-foreground/70 uppercase tracking-wide">Auto Delete</div>
               </div>
             </div>
             
