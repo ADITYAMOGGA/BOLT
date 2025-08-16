@@ -259,17 +259,42 @@ export default function Home() {
       
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-        {/* Section Divider */}
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary/40 rounded-full mb-8"></div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 max-w-6xl mx-auto relative">
-          {/* Central Divider Line */}
-          <div className="hidden lg:block absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-border/50 to-transparent"></div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+        {/* Premium Header Section */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full border border-primary/20 mb-6">
+            <div className="w-2 h-2 bg-primary rounded-full mr-3 animate-pulse"></div>
+            <span className="text-sm font-medium text-primary">Secure File Sharing Platform</span>
+          </div>
+          <h1 className="text-5xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
+            Share Files
+            <br />
+            <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Instantly</span>
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Upload, share, and download files securely with military-grade encryption and automatic expiration.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 max-w-7xl mx-auto relative">
+          {/* Premium Central Divider */}
+          <div className="hidden lg:block absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-border/30 to-transparent"></div>
+          <div className="hidden lg:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-background border-2 border-border rounded-full flex items-center justify-center">
+            <div className="w-2 h-2 bg-primary rounded-full"></div>
+          </div>
           
           {/* Left Panel - Core Action Area */}
-          <div className="space-y-8 w-full max-w-xs lg:max-w-sm mx-auto lg:mx-0 lg:ml-[-2rem]">
+          <div className="space-y-8 w-full max-w-sm mx-auto lg:mx-0 lg:ml-[-2rem]">
+            {/* Section Label */}
+            <div className="flex items-center mb-6">
+              <div className="w-12 h-px bg-primary mr-4"></div>
+              <span className="text-sm font-semibold text-primary uppercase tracking-wider">Actions</span>
+              <div className="flex-1 h-px bg-border/30 ml-4"></div>
+            </div>
             {/* Send Box - Dynamic content based on upload state */}
-            <div className="bg-secondary rounded-lg border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '220px' : 'auto' }}>
+            <div className="bg-card backdrop-blur-sm rounded-2xl border border-border/50 shadow-2xl p-8 w-full transition-all duration-500 hover:shadow-3xl hover:border-primary/30 hover:-translate-y-1 relative overflow-hidden" style={{ minHeight: uploadStep === 'initial' ? '240px' : 'auto' }}>
+              {/* Card Accent */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/50 to-transparent"></div>
+              <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -281,13 +306,22 @@ export default function Home() {
               
               {uploadStep === 'initial' && (
                 <>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Send</h2>
+                  <div className="flex items-center justify-between mb-8">
+                    <div>
+                      <h2 className="text-3xl font-bold text-foreground mb-2">Send</h2>
+                      <p className="text-sm text-muted-foreground">Upload files up to 200MB</p>
+                    </div>
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                      <Plus className="w-6 h-6 text-primary" />
+                    </div>
+                  </div>
                   <div 
-                    className="cursor-pointer hover:scale-105 transition-all duration-300 flex items-center justify-center h-20 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl border-2 border-dashed border-primary/30 hover:border-primary/60"
+                    className="group cursor-pointer transition-all duration-500 flex items-center justify-center h-28 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 rounded-2xl border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-gradient-to-br hover:from-primary/10 hover:via-primary/20 hover:to-primary/10 relative overflow-hidden"
                     onClick={() => fileInputRef.current?.click()}
                     data-testid="button-send"
                   >
-                    <Plus className="w-16 h-16 text-primary" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    <Plus className="w-20 h-20 text-primary group-hover:scale-110 transition-transform duration-300" />
                   </div>
                 </>
               )}
@@ -464,24 +498,35 @@ export default function Home() {
             </div>
 
             {/* Receive Box - Dynamic content based on receive state */}
-            <div className="bg-secondary rounded-lg border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '220px' : 'auto' }}>
+            <div className="bg-card backdrop-blur-sm rounded-2xl border border-border/50 shadow-2xl p-8 w-full transition-all duration-500 hover:shadow-3xl hover:border-primary/30 hover:-translate-y-1 relative overflow-hidden" style={{ minHeight: receiveStep === 'initial' ? '240px' : 'auto' }}>
+              {/* Card Accent */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/70 via-primary to-primary/70"></div>
+              <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
               {receiveStep === 'initial' && (
                 <>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Receive</h2>
+                  <div className="flex items-center justify-between mb-8">
+                    <div>
+                      <h2 className="text-3xl font-bold text-foreground mb-2">Receive</h2>
+                      <p className="text-sm text-muted-foreground">Enter 6-character code</p>
+                    </div>
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                      <Download className="w-6 h-6 text-primary" />
+                    </div>
+                  </div>
                   <form onSubmit={handleCodeSubmit}>
                     <div className="flex items-center space-x-4">
                       <Input
                         id="download-code"
                         type="text"
-                        placeholder="Enter 6-digit key"
+                        placeholder="ABC123"
                         value={downloadCode}
                         onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
                         maxLength={6}
-                        className="flex-1 text-lg font-medium text-gray-700 bg-gray-50 border-2 border-gray-200 focus:border-primary rounded-xl h-14 px-4"
+                        className="flex-1 text-lg font-mono font-bold text-foreground bg-background/80 border-2 border-border/50 focus:border-primary rounded-xl h-16 px-6 tracking-widest placeholder:text-muted-foreground/50 backdrop-blur-sm"
                         data-testid="input-download-code"
                       />
-                      <Button type="submit" variant="default" size="lg" className="px-6 h-14 bg-primary hover:bg-primary/90" data-testid="button-search">
-                        <Download className="w-5 h-5" />
+                      <Button type="submit" variant="default" size="lg" className="px-8 h-16 bg-primary hover:bg-primary/90 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="button-search">
+                        <Download className="w-6 h-6" />
                       </Button>
                     </div>
                   </form>
@@ -543,56 +588,151 @@ export default function Home() {
           </div>
 
           {/* Right Panel - Introduction & Features */}
-          <div className="space-y-10 lg:pl-8 border-l-2 border-border/30 lg:border-l-2 lg:pl-12">
+          <div className="space-y-12 lg:pl-12 border-l border-border/20 lg:border-l lg:pl-16 relative">
+            {/* Section Label */}
+            <div className="flex items-center mb-8">
+              <div className="w-12 h-px bg-primary mr-4"></div>
+              <span className="text-sm font-semibold text-primary uppercase tracking-wider">Overview</span>
+              <div className="flex-1 h-px bg-border/30 ml-4"></div>
+            </div>
+            {/* Stats Bar */}
+            <div className="grid grid-cols-3 gap-6 mb-12">
+              <div className="text-center p-4 bg-card/50 backdrop-blur-sm rounded-xl border border-border/30">
+                <div className="text-2xl font-bold text-primary mb-1">256-bit</div>
+                <div className="text-xs text-muted-foreground uppercase tracking-wide">Encryption</div>
+              </div>
+              <div className="text-center p-4 bg-card/50 backdrop-blur-sm rounded-xl border border-border/30">
+                <div className="text-2xl font-bold text-primary mb-1">200MB</div>
+                <div className="text-xs text-muted-foreground uppercase tracking-wide">Max Size</div>
+              </div>
+              <div className="text-center p-4 bg-card/50 backdrop-blur-sm rounded-xl border border-border/30">
+                <div className="text-2xl font-bold text-primary mb-1">24hrs</div>
+                <div className="text-xs text-muted-foreground uppercase tracking-wide">Auto Delete</div>
+              </div>
+            </div>
+            
             {/* Main Introduction */}
-            <div className="text-center lg:text-left p-6 border-2 border-border bg-background/40 rounded-xl relative">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/30 to-transparent rounded-t-xl"></div>
-              <h1 className="text-5xl lg:text-6xl font-bold text-foreground mb-8 leading-tight">
-                Want to send larger files securely?
-              </h1>
-              <p className="text-foreground/80 text-xl lg:text-2xl mb-10 leading-relaxed">
-                BOLT makes file sharing simple and secure. Upload files up to 200MB, share them with unique codes, and they automatically delete after 30 minutes for your security.
-              </p>
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold px-10 py-6 text-xl rounded-xl border-2 border-border shadow-lg hover:shadow-xl transition-all duration-300" data-testid="button-see-features">
-                See more features
-                <ArrowRight className="w-6 h-6 ml-3" />
-              </Button>
+            <div className="text-left p-8 bg-gradient-to-br from-card via-card/95 to-card/90 backdrop-blur-sm rounded-3xl border border-border/30 shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+              <div className="absolute -top-32 -right-32 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+              
+              <div className="relative z-10">
+                <div className="inline-flex items-center px-3 py-1 bg-primary/10 rounded-full border border-primary/20 mb-6">
+                  <Shield className="w-4 h-4 text-primary mr-2" />
+                  <span className="text-sm font-medium text-primary">Enterprise Security</span>
+                </div>
+                
+                <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
+                  Professional File
+                  <br />
+                  <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Sharing Platform</span>
+                </h2>
+                
+                <p className="text-muted-foreground text-lg mb-8 leading-relaxed max-w-lg">
+                  Enterprise-grade security meets simplicity. Share files instantly with military-level encryption, automatic expiration, and zero-knowledge architecture.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="button-see-features">
+                    Get Started
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                  <Button variant="outline" className="border-border hover:bg-muted font-medium px-8 py-4 rounded-xl transition-all duration-300">
+                    Learn More
+                  </Button>
+                </div>
+              </div>
             </div>
 
-            {/* Feature Illustration */}
-            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 text-center border-2 border-border relative">
-              <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-primary/20 to-transparent rounded-r-3xl"></div>
-              <div className="w-20 h-20 bg-primary rounded-full shadow-xl flex items-center justify-center mx-auto mb-6 border-2 border-border">
-                <Zap className="w-10 h-10 text-primary-foreground" />
-              </div>
-              <div className="bg-white rounded-2xl border-2 border-border shadow-lg p-6 max-w-sm mx-auto">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-base font-medium text-foreground">Secure Transfer</span>
-                  <Shield className="w-5 h-5 text-green-500" />
+            {/* Feature Showcase */}
+            <div className="bg-gradient-to-br from-card/80 to-card/60 backdrop-blur-sm rounded-3xl p-8 border border-border/30 shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-primary/20 via-primary/40 to-primary/20"></div>
+              <div className="absolute -bottom-16 -right-16 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-8">
+                  <div>
+                    <h3 className="text-2xl font-bold text-foreground mb-2">Live Transfer Demo</h3>
+                    <p className="text-sm text-muted-foreground">Real-time progress tracking</p>
+                  </div>
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-2xl shadow-xl flex items-center justify-center">
+                    <Zap className="w-8 h-8 text-white" />
+                  </div>
                 </div>
-                <div className="bg-muted rounded-full h-3 mb-4 border border-border">
-                  <div className="bg-primary rounded-full h-3 w-3/4 transition-all duration-500"></div>
+                
+                <div className="bg-card/90 backdrop-blur-sm rounded-2xl border border-border/50 shadow-xl p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center">
+                      <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+                      <span className="font-semibold text-foreground">document.pdf</span>
+                    </div>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Shield className="w-4 h-4 mr-1" />
+                      <span>Encrypted</span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Progress</span>
+                      <span className="font-mono font-bold text-primary">87%</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                      <div className="bg-gradient-to-r from-primary to-primary/80 h-2 rounded-full transition-all duration-1000 relative" style={{width: '87%'}}>
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>2.1 MB/s</span>
+                      <span>Code: XYZ789</span>
+                    </div>
+                  </div>
                 </div>
-                <span className="text-sm font-medium text-muted-foreground">Upload complete • Code: ABC123</span>
               </div>
             </div>
 
-            {/* Quick Features */}
-            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 border-2 border-border relative">
-              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-b-3xl"></div>
-              <h3 className="font-bold text-2xl text-foreground mb-8">Why choose BOLT?</h3>
-              <div className="space-y-6">
-                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
-                  <Shield className="w-8 h-8 text-green-600 mr-5" />
-                  <span className="text-foreground text-xl font-medium">End-to-end encryption</span>
+            {/* Premium Features Grid */}
+            <div className="space-y-6">
+              <h3 className="text-2xl font-bold text-foreground mb-8">Enterprise Features</h3>
+              
+              <div className="grid grid-cols-1 gap-4">
+                <div className="group bg-gradient-to-r from-card/90 to-card/70 backdrop-blur-sm p-6 rounded-2xl border border-border/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="flex items-center relative z-10">
+                    <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center mr-4">
+                      <Shield className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-1">Military-Grade Encryption</h4>
+                      <p className="text-sm text-muted-foreground">AES-256 encryption for maximum security</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
-                  <Clock className="w-8 h-8 text-blue-600 mr-5" />
-                  <span className="text-foreground text-xl font-medium">30-minute auto-deletion</span>
+                
+                <div className="group bg-gradient-to-r from-card/90 to-card/70 backdrop-blur-sm p-6 rounded-2xl border border-border/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="flex items-center relative z-10">
+                    <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mr-4">
+                      <Clock className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-1">Auto-Expiration</h4>
+                      <p className="text-sm text-muted-foreground">Files automatically delete after 24 hours</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
-                  <Globe className="w-8 h-8 text-purple-600 mr-5" />
-                  <span className="text-foreground text-xl font-medium">Access from anywhere</span>
+                
+                <div className="group bg-gradient-to-r from-card/90 to-card/70 backdrop-blur-sm p-6 rounded-2xl border border-border/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="flex items-center relative z-10">
+                    <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mr-4">
+                      <Globe className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-1">Global Access</h4>
+                      <p className="text-sm text-muted-foreground">Access your files from anywhere, anytime</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
