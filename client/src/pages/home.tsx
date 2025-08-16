@@ -264,7 +264,7 @@ export default function Home() {
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary/40 rounded-full mb-8"></div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 max-w-6xl mx-auto relative">
           {/* Central Divider Line */}
-          <div className="hidden lg:block absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-border/50 to-transparent"></div>
+          <div className="hidden lg:block absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-primary/40 to-transparent z-10"></div>
           
           {/* Left Panel - Core Action Area */}
           <div className="space-y-8 w-full max-w-xs lg:max-w-sm mx-auto lg:mx-0 lg:ml-[-2rem]">
