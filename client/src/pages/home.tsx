@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/language-context';
 import { Navigation } from '@/components/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Download, ArrowRight, Globe, Mail, Shield, Clock, Zap, ArrowLeft, Link, QrCode, Copy, CheckCircle } from 'lucide-react';
+import { Plus, Download, Eye, ArrowRight, Globe, Mail, Shield, Clock, Zap, ArrowLeft, Link, QrCode, Copy, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
@@ -560,14 +560,25 @@ export default function Home() {
                         <div className="text-base font-bold text-orange-700">{new Date(foundFile.expires_at).toLocaleTimeString()}</div>
                       </div>
                     </div>
-                    <Button
-                      onClick={handleDownload}
-                      className="w-full h-16 bg-primary text-white hover:bg-primary/90 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                      data-testid="button-download-file"
-                    >
-                      <Download className="w-6 h-6 mr-3" />
-                      Download File
-                    </Button>
+                    <div className="space-y-3">
+                      <Button
+                        onClick={() => navigate(`/d/${foundFile.code}`)}
+                        variant="outline"
+                        className="w-full h-14 border-primary text-primary hover:bg-primary/10 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                        data-testid="button-preview-file"
+                      >
+                        <Eye className="w-5 h-5 mr-3" />
+                        Preview & Download
+                      </Button>
+                      <Button
+                        onClick={handleDownload}
+                        className="w-full h-16 bg-primary text-white hover:bg-primary/90 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                        data-testid="button-download-file"
+                      >
+                        <Download className="w-6 h-6 mr-3" />
+                        Download Directly
+                      </Button>
+                    </div>
                   </div>
                 </>
               )}

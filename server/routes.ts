@@ -210,10 +210,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
         expires_at: file.expiresAt,
         download_count: file.downloadCount,
         hasPassword: !!file.password,
+        filename: file.filename, // Include Cloudinary public_id for preview generation
       });
     } catch (error) {
       console.error("Get file error:", error);
       res.status(500).json({ message: "Failed to get file info" });
+    }
+  });
+
+  // Get file preview URL
+  app.get("/api/preview/:code", async (req, res) => {
+    try {
+      const { code } = req.params;
+      const file = await storage.getFileByCode(code);
+      
+      if (!file) {
+        return res.status(404).json({ message: "File not found or expired" });
+      }
+
+      // Generate preview URL based on file type
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+      const isImageFile = file.mimeType.startsWith('image/');
+      const isVideoFile = file.mimeType.startsWith('video/');
+      const isPdfFile = file.mimeType.includes('pdf');
+      
+      let previewUrl = null;
+      let canPreview = false;
+
+      if (isImageFile) {
+        // For images, use Cloudinary's transformation capabilities
+        previewUrl = `https://res.cloudinary.com/${cloudName}/image/upload/w_800,h_600,c_limit,f_auto,q_auto/${file.filename}`;
+        canPreview = true;
+      } else if (isVideoFile) {
+        // For videos, use Cloudinary's video preview
+        previewUrl = `https://res.cloudinary.com/${cloudName}/video/upload/${file.filename}`;
+        canPreview = true;
+      } else if (isPdfFile) {
+        // For PDFs, convert first page to image
+        previewUrl = `https://res.cloudinary.com/${cloudName}/image/upload/f_jpg,pg_1/${file.filename}`;
+        canPreview = true;
+      }
+
+      res.json({
+        canPreview,
+        previewUrl,
+        file: {
+          id: file.id,
+          original_name: file.originalName,
+          code: file.code,
+          size: file.size,
+          mime_type: file.mimeType,
+          expires_at: file.expiresAt,
+          download_count: file.downloadCount,
+          hasPassword: !!file.password,
+        }
+      });
+    } catch (error) {
+      console.error("Get preview error:", error);
+      res.status(500).json({ message: "Failed to get preview" });
     }
   });
 

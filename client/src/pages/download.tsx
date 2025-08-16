@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { Download, FileText, Image, Film, Music, Archive, File as FileIcon, AlertCircle, Lock, Calendar, HardDrive } from 'lucide-react';
+import { Download, Eye, FileText, Image, Film, Music, Archive, File as FileIcon, AlertCircle, Lock, Calendar, HardDrive } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 import { format } from 'date-fns';
@@ -22,6 +22,11 @@ export default function DownloadPage() {
   const { data: file, isLoading, error } = useQuery<any>({
     queryKey: ['/api/file', code],
     enabled: !!code,
+  });
+
+  const { data: previewData } = useQuery<any>({
+    queryKey: ['/api/preview', code],
+    enabled: !!code && !!file,
   });
 
   const downloadMutation = useMutation({
@@ -224,11 +229,58 @@ export default function DownloadPage() {
                 </div>
               )}
 
+              {/* Preview Section */}
+              {previewData?.canPreview && (
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
+                    <Eye className="w-5 h-5 mr-2" />
+                    File Preview
+                  </h4>
+                  <div className="w-full max-h-96 bg-gray-100 dark:bg-slate-700 rounded-xl overflow-hidden border">
+                    {file.mime_type.startsWith('image/') && (
+                      <img 
+                        src={previewData.previewUrl} 
+                        alt={file.original_name}
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                    )}
+                    {file.mime_type.startsWith('video/') && (
+                      <video 
+                        src={previewData.previewUrl} 
+                        controls
+                        className="w-full h-full"
+                        preload="metadata"
+                      >
+                        Your browser does not support video preview.
+                      </video>
+                    )}
+                    {file.mime_type.includes('pdf') && (
+                      <img 
+                        src={previewData.previewUrl} 
+                        alt="PDF Preview"
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                    )}
+                    <div className="hidden w-full h-96 flex items-center justify-center">
+                      <p className="text-gray-600 dark:text-gray-300">Preview unavailable</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Download Button */}
               <Button
                 onClick={() => downloadMutation.mutate()}
                 disabled={downloadMutation.isPending || (file.hasPassword && !password)}
-                className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-12 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-12 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Download className="w-6 h-6 mr-3" />
                 {downloadMutation.isPending ? 'Downloading...' : 'Download File'}

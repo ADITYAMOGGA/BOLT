@@ -10,6 +10,7 @@ import Home from "@/pages/home";
 import AuthPage from "@/pages/auth";
 import Dashboard from "@/pages/dashboard";
 import DownloadPage from "@/pages/download";
+
 import About from "@/pages/about";
 import Privacy from "@/pages/privacy";
 import Help from "@/pages/help";
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/auth" component={AuthPage} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/d/:code" component={DownloadPage} />
+
       <Route path="/about" component={About} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/help" component={Help} />
