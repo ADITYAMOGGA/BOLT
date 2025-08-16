@@ -47,15 +47,15 @@ export function Navigation() {
             
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-1">
-              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">{t('nav.transfer')}</Button>
-              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">{t('nav.product')}</Button>
-              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">{t('nav.pricing')}</Button>
-              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">{t('nav.download')}</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary hover:bg-accent">{t('nav.transfer')}</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary hover:bg-accent">{t('nav.product')}</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary hover:bg-accent">{t('nav.pricing')}</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary hover:bg-accent">{t('nav.download')}</Button>
             </div>
             
             {/* Right side buttons */}
             <div className="flex items-center space-x-3">
-              <Button variant="outline" size="sm" className="border-2 border-primary text-primary hover:bg-primary/10">
+              <Button variant="outline" size="sm" className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                 {t('nav.contact')}
               </Button>
               {/* Authentication */}
@@ -65,7 +65,7 @@ export function Navigation() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="flex items-center space-x-2"
+                      className="flex items-center space-x-2 text-foreground hover:text-accent-foreground hover:bg-accent"
                       data-testid="button-user-menu"
                     >
                       <User className="w-4 h-4" />
