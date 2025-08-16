@@ -199,21 +199,15 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Top Announcement Bar */}
-      <div className="bg-accent border-2 border-border py-3">
-        <div className="container mx-auto px-4 text-center">
-          <span className="text-sm font-medium text-accent-foreground">🎉 New plans are newly released!</span>
-        </div>
-      </div>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 max-w-6xl mx-auto">
           
           {/* Left Panel - Core Action Area */}
-          <div className="space-y-8 w-full max-w-lg mx-auto lg:mx-0">
+          <div className="space-y-8 w-full max-w-xs mx-auto lg:mx-0">
             {/* Send Box - Dynamic content based on upload state */}
-            <div className="bg-white rounded-2xl border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '160px' : 'auto' }}>
+            <div className="bg-white border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '220px' : 'auto' }}>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -369,7 +363,7 @@ export default function Home() {
             </div>
 
             {/* Receive Box - Dynamic content based on receive state */}
-            <div className="bg-white rounded-2xl border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '160px' : 'auto' }}>
+            <div className="bg-white border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '220px' : 'auto' }}>
               {receiveStep === 'initial' && (
                 <>
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Receive</h2>
