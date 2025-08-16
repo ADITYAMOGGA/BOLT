@@ -26,8 +26,12 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="bg-card border-b-2 border-border sticky top-0 z-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Layout Lines for Navigation */}
+      <div className="absolute top-16 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent pointer-events-none z-40"></div>
+      <nav className="bg-card border-b-2 border-border sticky top-0 z-50 relative">
+        {/* Navigation accent line */}
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20"></div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/">
@@ -135,7 +139,8 @@ export function Navigation() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-card border-b-2 border-border">
+        <div className="lg:hidden bg-card border-b-2 border-border relative">
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border/50 to-transparent"></div>
           <div className="container mx-auto px-4 py-4 space-y-2">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>

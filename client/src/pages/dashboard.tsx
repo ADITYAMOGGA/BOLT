@@ -152,10 +152,16 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Layout Grid Lines */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-px h-full bg-border/15"></div>
+        <div className="absolute top-0 left-1/2 w-px h-full bg-border/25"></div>
+        <div className="absolute top-0 left-3/4 w-px h-full bg-border/15"></div>
+      </div>
       <Navigation />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -194,7 +200,9 @@ export default function Dashboard() {
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 relative">
+          {/* Section Border */}
+          <div className="absolute -top-2 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
           <Card className="border-0 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-300">
@@ -265,7 +273,8 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <Card className="mb-8 border-0 shadow-lg">
+        <Card className="mb-8 border-0 shadow-lg relative">
+          <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-primary/40 to-primary/10 rounded-l-lg"></div>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="w-5 h-5" />
@@ -310,7 +319,8 @@ export default function Dashboard() {
         </Card>
 
         {/* Files Section */}
-        <Card className="border-0 shadow-lg">
+        <Card className="border-0 shadow-lg relative">
+          <div className="absolute top-0 right-0 w-2 h-full bg-gradient-to-b from-blue-400/30 to-blue-400/10 rounded-r-lg"></div>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Files className="w-5 h-5" />

@@ -196,18 +196,30 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Layout Grid Lines */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-px h-full bg-border/20"></div>
+        <div className="absolute top-0 left-1/2 w-px h-full bg-border/30"></div>
+        <div className="absolute top-0 left-3/4 w-px h-full bg-border/20"></div>
+        <div className="absolute top-1/3 left-0 w-full h-px bg-border/20"></div>
+        <div className="absolute top-2/3 left-0 w-full h-px bg-border/20"></div>
+      </div>
       <Navigation />
       
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 max-w-6xl mx-auto">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
+        {/* Section Divider */}
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary/40 rounded-full mb-8"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 max-w-6xl mx-auto relative">
+          {/* Central Divider Line */}
+          <div className="hidden lg:block absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-border/50 to-transparent"></div>
           
           {/* Left Panel - Core Action Area */}
-          <div className="space-y-8 w-full max-w-xs mx-auto lg:mx-0">
+          <div className="space-y-8 w-full max-w-xs lg:max-w-sm mx-auto lg:mx-0 lg:ml-[-2rem]">
             {/* Send Box - Dynamic content based on upload state */}
-            <div className="bg-white border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '220px' : 'auto' }}>
+            <div className="bg-white rounded-lg border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '220px' : 'auto' }}>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -363,7 +375,7 @@ export default function Home() {
             </div>
 
             {/* Receive Box - Dynamic content based on receive state */}
-            <div className="bg-white border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '220px' : 'auto' }}>
+            <div className="bg-white rounded-lg border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '220px' : 'auto' }}>
               {receiveStep === 'initial' && (
                 <>
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Receive</h2>
@@ -442,9 +454,10 @@ export default function Home() {
           </div>
 
           {/* Right Panel - Introduction & Features */}
-          <div className="space-y-10 lg:pl-8">
+          <div className="space-y-10 lg:pl-8 border-l-2 border-border/30 lg:border-l-2 lg:pl-12">
             {/* Main Introduction */}
-            <div className="text-center lg:text-left p-6 border-2 border-border bg-background/40 rounded-xl">
+            <div className="text-center lg:text-left p-6 border-2 border-border bg-background/40 rounded-xl relative">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/30 to-transparent rounded-t-xl"></div>
               <h1 className="text-5xl lg:text-6xl font-bold text-foreground mb-8 leading-tight">
                 Want to send larger files securely?
               </h1>
@@ -458,7 +471,8 @@ export default function Home() {
             </div>
 
             {/* Feature Illustration */}
-            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 text-center border-2 border-border">
+            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 text-center border-2 border-border relative">
+              <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-primary/20 to-transparent rounded-r-3xl"></div>
               <div className="w-20 h-20 bg-primary rounded-full shadow-xl flex items-center justify-center mx-auto mb-6 border-2 border-border">
                 <Zap className="w-10 h-10 text-primary-foreground" />
               </div>
@@ -475,7 +489,8 @@ export default function Home() {
             </div>
 
             {/* Quick Features */}
-            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 border-2 border-border">
+            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 border-2 border-border relative">
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-b-3xl"></div>
               <h3 className="font-bold text-2xl text-foreground mb-8">Why choose BOLT?</h3>
               <div className="space-y-6">
                 <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
