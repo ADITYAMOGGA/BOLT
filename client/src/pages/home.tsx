@@ -269,7 +269,7 @@ export default function Home() {
           {/* Left Panel - Core Action Area */}
           <div className="space-y-8 w-full max-w-xs lg:max-w-sm mx-auto lg:mx-0 lg:ml-[-2rem]">
             {/* Send Box - Dynamic content based on upload state */}
-            <div className="bg-white rounded-lg border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '220px' : 'auto' }}>
+            <div className="bg-secondary rounded-lg border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '220px' : 'auto' }}>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -464,7 +464,7 @@ export default function Home() {
             </div>
 
             {/* Receive Box - Dynamic content based on receive state */}
-            <div className="bg-white rounded-lg border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '220px' : 'auto' }}>
+            <div className="bg-secondary rounded-lg border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '220px' : 'auto' }}>
               {receiveStep === 'initial' && (
                 <>
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Receive</h2>
