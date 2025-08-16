@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { Navigation } from '@/components/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Download, ArrowRight, Globe, Mail, Shield, Clock, Zap, ArrowLeft, Link, QrCode, Copy, CheckCircle, Upload, FileText, Users, Star } from 'lucide-react';
+import { Plus, Download, ArrowRight, Globe, Mail, Shield, Clock, Zap, ArrowLeft, Link, QrCode, Copy, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
@@ -246,39 +246,30 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Layout Grid Lines */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-px h-full bg-border/20"></div>
+        <div className="absolute top-0 left-1/2 w-px h-full bg-border/30"></div>
+        <div className="absolute top-0 left-3/4 w-px h-full bg-border/20"></div>
+        <div className="absolute top-1/3 left-0 w-full h-px bg-border/20"></div>
+        <div className="absolute top-2/3 left-0 w-full h-px bg-border/20"></div>
+      </div>
       <Navigation />
       
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }} />
-        </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          {/* Main Header */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center bg-white px-4 py-2 rounded-full shadow-md mb-6">
-              <Zap className="w-5 h-5 text-primary mr-2" />
-              <span className="text-sm font-semibold text-foreground">Fast & Secure File Sharing</span>
-            </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-              Share files instantly,<br />
-              <span className="text-primary">anywhere in the world</span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Upload files up to 200MB and share them with unique codes. Files automatically delete after 30 minutes for your security.
-            </p>
-          </div>
-
-          {/* Main Action Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
-            
-            {/* Upload Section */}
-            <div className="bg-white rounded-3xl shadow-2xl p-8 border border-border/20 hover:shadow-3xl transition-all duration-300">
+      {/* Main Content */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
+        {/* Section Divider */}
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary/40 rounded-full mb-8"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 max-w-6xl mx-auto relative">
+          {/* Central Divider Line */}
+          <div className="hidden lg:block absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-border/50 to-transparent"></div>
+          
+          {/* Left Panel - Core Action Area */}
+          <div className="space-y-8 w-full max-w-xs lg:max-w-sm mx-auto lg:mx-0 lg:ml-[-2rem]">
+            {/* Send Box - Dynamic content based on upload state */}
+            <div className="bg-secondary rounded-lg border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: uploadStep === 'initial' ? '220px' : 'auto' }}>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -289,303 +280,332 @@ export default function Home() {
               />
               
               {uploadStep === 'initial' && (
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <Upload className="w-10 h-10 text-primary" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-foreground mb-4">Send Files</h2>
-                  <p className="text-muted-foreground mb-8">
-                    Drag & drop or click to upload your files
-                  </p>
-                  <Button
+                <>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Send</h2>
+                  <div 
+                    className="cursor-pointer hover:scale-105 transition-all duration-300 flex items-center justify-center h-20 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl border-2 border-dashed border-primary/30 hover:border-primary/60"
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full h-14 text-lg font-semibold bg-primary text-white hover:bg-primary/90 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                     data-testid="button-send"
                   >
-                    <Plus className="w-6 h-6 mr-3" />
-                    Choose File
-                  </Button>
-                  <p className="text-sm text-muted-foreground mt-4">
-                    Max file size: 200MB
-                  </p>
-                </div>
+                    <Plus className="w-16 h-16 text-primary" />
+                  </div>
+                </>
               )}
 
               {uploadStep === 'uploading' && (
-                <div>
-                  <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mr-4">
-                      <Upload className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-foreground">Uploading...</h2>
-                      <p className="text-sm text-muted-foreground truncate max-w-xs">{selectedFile?.name}</p>
-                    </div>
-                  </div>
-                  
-                  {/* Enhanced Progress Bar */}
+                <>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Uploading...</h2>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-semibold text-foreground">{uploadProgress}% Complete</span>
-                      <span className="text-sm text-muted-foreground">
-                        {uploadSpeed > 0 ? (
-                          uploadSpeed > 1024 * 1024 
-                            ? `${(uploadSpeed / (1024 * 1024)).toFixed(1)} MB/s`
-                            : uploadSpeed > 1024
-                            ? `${(uploadSpeed / 1024).toFixed(1)} KB/s`
-                            : `${uploadSpeed.toFixed(0)} B/s`
-                        ) : 'Calculating...'}
-                      </span>
+                    <div className="text-base font-medium text-gray-700 truncate p-3 bg-gray-50 rounded-lg" data-testid="text-filename">
+                      {selectedFile?.name}
                     </div>
                     
-                    <div className="w-full bg-secondary rounded-full h-4 overflow-hidden">
-                      <div 
-                        className="bg-gradient-to-r from-primary to-primary/80 h-4 rounded-full transition-all duration-300 ease-out relative"
-                        style={{ width: `${uploadProgress}%` }}
-                        data-testid="upload-progress-bar"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+                    {/* Progress Bar */}
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="font-medium text-gray-700">{uploadProgress}% Complete</span>
+                        <span className="text-gray-600">
+                          {uploadSpeed > 0 ? (
+                            uploadSpeed > 1024 * 1024 
+                              ? `${(uploadSpeed / (1024 * 1024)).toFixed(1)} MB/s`
+                              : uploadSpeed > 1024
+                              ? `${(uploadSpeed / 1024).toFixed(1)} KB/s`
+                              : `${uploadSpeed.toFixed(0)} B/s`
+                          ) : '---'}
+                        </span>
+                      </div>
+                      
+                      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div 
+                          className="bg-primary h-3 rounded-full transition-all duration-300 ease-out relative"
+                          style={{ width: `${uploadProgress}%` }}
+                          data-testid="upload-progress-bar"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between items-center text-xs text-gray-500">
+                        <span>
+                          {uploadedBytes > 0 && selectedFile ? (
+                            `${(uploadedBytes / (1024 * 1024)).toFixed(1)} MB of ${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB`
+                          ) : (
+                            'Preparing upload...'
+                          )}
+                        </span>
+                        <span>
+                          {uploadSpeed > 0 && selectedFile && uploadedBytes > 0 ? (
+                            `ETA: ${Math.max(0, Math.ceil((selectedFile.size - uploadedBytes) / uploadSpeed))}s`
+                          ) : (
+                            'Calculating...'
+                          )}
+                        </span>
                       </div>
                     </div>
-                    
-                    <div className="flex justify-between items-center text-xs text-muted-foreground">
-                      <span>
-                        {uploadedBytes > 0 && selectedFile ? (
-                          `${(uploadedBytes / (1024 * 1024)).toFixed(1)} MB of ${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB`
-                        ) : (
-                          'Preparing upload...'
-                        )}
-                      </span>
-                      <span>
-                        {uploadSpeed > 0 && selectedFile && uploadedBytes > 0 ? (
-                          `ETA: ${Math.max(0, Math.ceil((selectedFile.size - uploadedBytes) / uploadSpeed))}s`
-                        ) : (
-                          'Calculating...'
-                        )}
-                      </span>
-                    </div>
                   </div>
-                </div>
+                </>
               )}
 
               {uploadStep === 'sharing' && (
-                <div>
+                <>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-foreground">Choose sharing method</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">Choose sharing method</h2>
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="lg"
                       onClick={resetUploadState}
                       data-testid="button-reset"
-                      className="text-muted-foreground hover:text-foreground"
+                      className="hover:bg-gray-100 rounded-xl"
                     >
-                      <ArrowLeft className="w-4 h-4 mr-2" />
-                      Back
+                      <ArrowLeft className="w-5 h-5" />
                     </Button>
                   </div>
-                  
-                  <div className="bg-secondary/50 rounded-xl p-4 mb-6">
-                    <p className="text-sm font-medium text-foreground truncate">{selectedFile?.name}</p>
+                  <div className="text-base font-medium text-gray-700 mb-6 p-3 bg-gray-50 rounded-lg truncate" data-testid="text-uploaded-filename">
+                    {selectedFile?.name}
                   </div>
-                  
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <Button
                       variant="outline"
-                      className="w-full justify-start h-16 text-left border-2 hover:border-primary hover:bg-primary/5"
+                      className="w-full justify-start h-16 text-lg border-2 hover:border-primary hover:bg-primary/5 rounded-xl"
                       onClick={() => handleSharingMethodSelect('code')}
                       data-testid="button-share-code"
                     >
-                      <QrCode className="w-6 h-6 mr-4 text-primary" />
-                      <div>
-                        <div className="font-semibold text-foreground">6-digit code</div>
-                        <div className="text-sm text-muted-foreground">Free & secure</div>
+                      <QrCode className="w-6 h-6 mr-4" />
+                      <div className="text-left">
+                        <div className="font-semibold">6-digit code</div>
+                        <div className="text-sm text-gray-500">Free</div>
                       </div>
                     </Button>
-                    
                     <Button
                       variant="outline"
-                      className="w-full justify-start h-16 text-left border-2 hover:border-primary hover:bg-primary/5 disabled:opacity-50"
+                      className="w-full justify-start h-16 text-lg border-2 hover:border-primary hover:bg-primary/5 rounded-xl disabled:opacity-50"
                       onClick={() => handleSharingMethodSelect('link')}
                       disabled={!user}
                       data-testid="button-share-link"
                     >
-                      <Link className="w-6 h-6 mr-4 text-primary" />
-                      <div>
-                        <div className="font-semibold text-foreground">Direct link</div>
-                        <div className="text-sm text-muted-foreground">{!user ? 'Login required' : 'Premium feature'}</div>
+                      <Link className="w-6 h-6 mr-4" />
+                      <div className="text-left">
+                        <div className="font-semibold">Direct link</div>
+                        <div className="text-sm text-gray-500">{!user ? 'Login required' : 'Premium feature'}</div>
+                      </div>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start h-16 text-lg border-2 hover:border-primary hover:bg-primary/5 rounded-xl disabled:opacity-50"
+                      onClick={() => handleSharingMethodSelect('email')}
+                      disabled={!user}
+                      data-testid="button-share-email"
+                    >
+                      <Mail className="w-6 h-6 mr-4" />
+                      <div className="text-left">
+                        <div className="font-semibold">Email</div>
+                        <div className="text-sm text-gray-500">{!user ? 'Login required' : 'Premium feature'}</div>
                       </div>
                     </Button>
                   </div>
-                </div>
+                </>
               )}
 
               {uploadStep === 'waiting' && uploadedFileData && (
-                <div className="text-center">
-                  <div className="flex items-center justify-center mb-6">
+                <>
+                  <div className="flex items-center justify-between mb-6">
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="lg"
                       onClick={resetUploadState}
                       data-testid="button-back"
-                      className="absolute left-4 top-4 text-muted-foreground"
+                      className="hover:bg-gray-100 rounded-xl"
                     >
-                      <ArrowLeft className="w-4 h-4" />
+                      <ArrowLeft className="w-5 h-5 mr-2" />
+                      Waiting...
                     </Button>
-                    <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center">
-                      <CheckCircle className="w-8 h-8 text-green-600" />
-                    </div>
                   </div>
-                  
-                  <h2 className="text-xl font-bold text-foreground mb-2">File ready to share!</h2>
-                  <p className="text-muted-foreground mb-6">
-                    Share this code with the recipient
-                  </p>
-                  
-                  <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-6 mb-6">
-                    <div className="flex justify-center space-x-2 mb-4">
+                  <div className="text-center space-y-6">
+                    <div className="space-y-2">
+                      <p className="text-lg font-medium text-gray-700">
+                        Enter the 6-digit key on the receiving device
+                      </p>
+                      <p className="text-base text-red-600 font-semibold">
+                        Expires in <span data-testid="text-timer" className="font-bold">{formatTime(timeLeft)}</span>
+                      </p>
+                    </div>
+                    
+                    {/* 6-digit code display */}
+                    <div className="flex justify-center space-x-3 my-8">
                       {uploadedFileData.code.split('').map((digit: string, index: number) => (
                         <div 
                           key={index}
-                          className="w-12 h-12 bg-white border-2 border-primary/20 rounded-xl flex items-center justify-center text-2xl font-bold text-primary shadow-sm"
+                          className="w-16 h-16 border-2 border-primary/30 bg-primary/5 rounded-xl flex items-center justify-center text-3xl font-bold text-primary shadow-sm"
                           data-testid={`digit-${index}`}
                         >
                           {digit}
                         </div>
                       ))}
                     </div>
-                    
-                    <Button 
-                      onClick={handleCopyCode}
-                      variant="outline"
-                      className="w-full h-12 text-base font-semibold border-2 border-primary text-primary hover:bg-primary hover:text-white"
-                      data-testid="button-copy-code"
-                    >
-                      <Copy className="w-5 h-5 mr-2" />
-                      Copy Code
-                    </Button>
-                  </div>
-                  
-                  <div className="text-sm text-muted-foreground">
-                    <div className="flex items-center justify-center">
-                      <Clock className="w-4 h-4 mr-2" />
-                      Expires in <span className="font-semibold ml-1" data-testid="text-timer">{formatTime(timeLeft)}</span>
+
+                    {/* QR Code placeholder and Copy button */}
+                    <div className="flex flex-col items-center space-y-6">
+                      <div className="w-40 h-40 border-2 border-gray-200 bg-gray-50 rounded-2xl flex items-center justify-center">
+                        <QrCode className="w-20 h-20 text-gray-400" />
+                      </div>
+                      <Button 
+                        onClick={handleCopyCode}
+                        variant="outline"
+                        className="w-full h-14 text-lg font-semibold border-2 hover:border-primary hover:bg-primary/5 rounded-xl"
+                        data-testid="button-copy-code"
+                      >
+                        <Copy className="w-5 h-5 mr-3" />
+                        Copy Code
+                      </Button>
                     </div>
                   </div>
-                </div>
+                </>
               )}
             </div>
 
-            {/* Download Section */}
-            <div className="bg-white rounded-3xl shadow-2xl p-8 border border-border/20 hover:shadow-3xl transition-all duration-300">
+            {/* Receive Box - Dynamic content based on receive state */}
+            <div className="bg-secondary rounded-lg border-2 border-border shadow-xl p-8 w-full transition-all duration-300 hover:shadow-2xl" style={{ minHeight: receiveStep === 'initial' ? '220px' : 'auto' }}>
               {receiveStep === 'initial' && (
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <Download className="w-10 h-10 text-primary" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-foreground mb-4">Receive Files</h2>
-                  <p className="text-muted-foreground mb-8">
-                    Enter the 6-digit code to download files
-                  </p>
-                  <form onSubmit={handleCodeSubmit} className="space-y-4">
-                    <Input
-                      type="text"
-                      placeholder="Enter 6-digit code"
-                      value={downloadCode}
-                      onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
-                      maxLength={6}
-                      className="h-14 text-center text-2xl font-bold tracking-widest bg-secondary/30 border-2 border-border focus:border-primary rounded-xl"
-                      data-testid="input-download-code"
-                    />
-                    <Button 
-                      type="submit" 
-                      className="w-full h-14 text-lg font-semibold bg-primary text-white hover:bg-primary/90 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                      data-testid="button-search"
-                    >
-                      <Download className="w-6 h-6 mr-3" />
-                      Find File
-                    </Button>
+                <>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Receive</h2>
+                  <form onSubmit={handleCodeSubmit}>
+                    <div className="flex items-center space-x-4">
+                      <Input
+                        id="download-code"
+                        type="text"
+                        placeholder="Enter 6-digit key"
+                        value={downloadCode}
+                        onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
+                        maxLength={6}
+                        className="flex-1 text-lg font-medium text-gray-700 bg-gray-50 border-2 border-gray-200 focus:border-primary rounded-xl h-14 px-4"
+                        data-testid="input-download-code"
+                      />
+                      <Button type="submit" variant="default" size="lg" className="px-6 h-14 bg-primary hover:bg-primary/90" data-testid="button-search">
+                        <Download className="w-5 h-5" />
+                      </Button>
+                    </div>
                   </form>
-                </div>
+                </>
               )}
 
               {receiveStep === 'loading' && (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Searching...</h2>
+                  <div className="flex items-center space-x-4">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                    <span className="text-base text-gray-600">Looking for file...</span>
                   </div>
-                  <h2 className="text-xl font-bold text-foreground mb-2">Searching...</h2>
-                  <p className="text-muted-foreground">Looking for your file</p>
-                </div>
+                </>
               )}
 
               {receiveStep === 'found' && foundFile && (
-                <div>
+                <>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-foreground">File Found!</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">File Found</h2>
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="lg"
                       onClick={resetReceiveState}
                       data-testid="button-back-receive"
-                      className="text-muted-foreground hover:text-foreground"
+                      className="hover:bg-gray-100 rounded-xl"
                     >
-                      <ArrowLeft className="w-4 h-4 mr-2" />
-                      Back
+                      <ArrowLeft className="w-5 h-5" />
                     </Button>
                   </div>
-                  
-                  <div className="bg-secondary/50 rounded-xl p-6 mb-6">
-                    <div className="flex items-center mb-4">
-                      <FileText className="w-8 h-8 text-primary mr-3" />
-                      <div>
-                        <h3 className="font-semibold text-foreground truncate">{foundFile.original_name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {(foundFile.size / 1024 / 1024).toFixed(2)} MB • 
-                          Expires at {new Date(foundFile.expires_at).toLocaleTimeString()}
-                        </p>
+                  <div className="space-y-5">
+                    <div className="p-4 bg-gray-50 rounded-xl">
+                      <div className="text-base font-medium text-gray-700 truncate" data-testid="text-found-filename">
+                        <strong className="text-gray-900">Name:</strong> {foundFile.original_name}
                       </div>
                     </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-3 bg-blue-50 rounded-lg">
+                        <div className="text-sm font-medium text-blue-900">Size</div>
+                        <div className="text-base font-bold text-blue-700">{(foundFile.size / 1024 / 1024).toFixed(2)} MB</div>
+                      </div>
+                      <div className="p-3 bg-orange-50 rounded-lg">
+                        <div className="text-sm font-medium text-orange-900">Expires</div>
+                        <div className="text-base font-bold text-orange-700">{new Date(foundFile.expires_at).toLocaleTimeString()}</div>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={handleDownload}
+                      className="w-full h-16 bg-primary text-white hover:bg-primary/90 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                      data-testid="button-download-file"
+                    >
+                      <Download className="w-6 h-6 mr-3" />
+                      Download File
+                    </Button>
                   </div>
-                  
-                  <Button
-                    onClick={handleDownload}
-                    className="w-full h-16 bg-gradient-to-r from-primary to-primary/90 text-white hover:from-primary/90 hover:to-primary/80 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                    data-testid="button-download-file"
-                  >
-                    <Download className="w-6 h-6 mr-3" />
-                    Download File
-                  </Button>
-                </div>
+                </>
               )}
             </div>
           </div>
 
-          {/* Features Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="text-center p-6 bg-white/50 rounded-2xl border border-border/20">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-6 h-6 text-green-600" />
-              </div>
-              <h3 className="font-bold text-foreground mb-2">Secure & Private</h3>
-              <p className="text-sm text-muted-foreground">Files auto-delete after 30 minutes</p>
+          {/* Right Panel - Introduction & Features */}
+          <div className="space-y-10 lg:pl-8 border-l-2 border-border/30 lg:border-l-2 lg:pl-12">
+            {/* Main Introduction */}
+            <div className="text-center lg:text-left p-6 border-2 border-border bg-background/40 rounded-xl relative">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/30 to-transparent rounded-t-xl"></div>
+              <h1 className="text-5xl lg:text-6xl font-bold text-foreground mb-8 leading-tight">
+                Want to send larger files securely?
+              </h1>
+              <p className="text-foreground/80 text-xl lg:text-2xl mb-10 leading-relaxed">
+                BOLT makes file sharing simple and secure. Upload files up to 200MB, share them with unique codes, and they automatically delete after 30 minutes for your security.
+              </p>
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold px-10 py-6 text-xl rounded-xl border-2 border-border shadow-lg hover:shadow-xl transition-all duration-300" data-testid="button-see-features">
+                See more features
+                <ArrowRight className="w-6 h-6 ml-3" />
+              </Button>
             </div>
-            
-            <div className="text-center p-6 bg-white/50 rounded-2xl border border-border/20">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Zap className="w-6 h-6 text-blue-600" />
+
+            {/* Feature Illustration */}
+            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 text-center border-2 border-border relative">
+              <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-primary/20 to-transparent rounded-r-3xl"></div>
+              <div className="w-20 h-20 bg-primary rounded-full shadow-xl flex items-center justify-center mx-auto mb-6 border-2 border-border">
+                <Zap className="w-10 h-10 text-primary-foreground" />
               </div>
-              <h3 className="font-bold text-foreground mb-2">Lightning Fast</h3>
-              <p className="text-sm text-muted-foreground">Upload & share in seconds</p>
+              <div className="bg-white rounded-2xl border-2 border-border shadow-lg p-6 max-w-sm mx-auto">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-base font-medium text-foreground">Secure Transfer</span>
+                  <Shield className="w-5 h-5 text-green-500" />
+                </div>
+                <div className="bg-muted rounded-full h-3 mb-4 border border-border">
+                  <div className="bg-primary rounded-full h-3 w-3/4 transition-all duration-500"></div>
+                </div>
+                <span className="text-sm font-medium text-muted-foreground">Upload complete • Code: ABC123</span>
+              </div>
             </div>
-            
-            <div className="text-center p-6 bg-white/50 rounded-2xl border border-border/20">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Users className="w-6 h-6 text-purple-600" />
+
+            {/* Quick Features */}
+            <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 border-2 border-border relative">
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-b-3xl"></div>
+              <h3 className="font-bold text-2xl text-foreground mb-8">Why choose BOLT?</h3>
+              <div className="space-y-6">
+                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
+                  <Shield className="w-8 h-8 text-green-600 mr-5" />
+                  <span className="text-foreground text-xl font-medium">End-to-end encryption</span>
+                </div>
+                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
+                  <Clock className="w-8 h-8 text-blue-600 mr-5" />
+                  <span className="text-foreground text-xl font-medium">30-minute auto-deletion</span>
+                </div>
+                <div className="flex items-center p-4 bg-primary/20 rounded-xl border-2 border-border">
+                  <Globe className="w-8 h-8 text-purple-600 mr-5" />
+                  <span className="text-foreground text-xl font-medium">Access from anywhere</span>
+                </div>
               </div>
-              <h3 className="font-bold text-foreground mb-2">Easy Sharing</h3>
-              <p className="text-sm text-muted-foreground">No registration required</p>
             </div>
           </div>
+        </div>
+
+
+
+        {/* Language Selector - Bottom Right */}
+        <div className="fixed bottom-6 right-6">
+          <Button variant="ghost" size="lg" className="text-foreground hover:text-primary bg-background/80 backdrop-blur-sm hover:bg-background/90 rounded-full p-4 border-2 border-border">
+            <Globe className="w-5 h-5" />
+          </Button>
         </div>
       </div>
     </div>
