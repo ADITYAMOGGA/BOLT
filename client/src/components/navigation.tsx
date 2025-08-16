@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTheme } from './theme-provider';
 import { useAuth } from '@/contexts/auth-context';
-import { Sun, Moon, Zap, Menu, X, Home, Info, Shield, HelpCircle, User, LogOut } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
+import { Sun, Moon, Zap, Menu, X, Home, Info, Shield, HelpCircle, User, LogOut, Globe, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Link, useLocation } from 'wouter';
@@ -9,6 +10,7 @@ import { Link, useLocation } from 'wouter';
 export function Navigation() {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
+  const { t, language, setLanguage, availableLanguages } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [location] = useLocation();
 
@@ -45,16 +47,16 @@ export function Navigation() {
             
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-1">
-              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">Transfer</Button>
-              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">Product</Button>
-              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">Pricing</Button>
-              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">Download</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">{t('nav.transfer')}</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">{t('nav.product')}</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">{t('nav.pricing')}</Button>
+              <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">{t('nav.download')}</Button>
             </div>
             
             {/* Right side buttons */}
             <div className="flex items-center space-x-3">
               <Button variant="outline" size="sm" className="border-2 border-primary text-primary hover:bg-primary/10">
-                Contact Us
+                {t('nav.contact')}
               </Button>
               {/* Authentication */}
               {user ? (
@@ -100,12 +102,43 @@ export function Navigation() {
                     data-testid="button-login-nav"
                   >
                     <User className="w-4 h-4" />
-                    <span className="hidden sm:inline">Login</span>
+                    <span className="hidden sm:inline">{t('nav.login')}</span>
                   </Button>
                 </Link>
               )}
               
               {/* Theme toggle */}
+              {/* Language Selector */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-9 h-9 p-0"
+                    data-testid="button-language-toggle"
+                  >
+                    <Globe className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  {availableLanguages.map((lang) => (
+                    <DropdownMenuItem
+                      key={lang.code}
+                      onClick={() => setLanguage(lang.code)}
+                      className="cursor-pointer flex items-center justify-between"
+                    >
+                      <div className="flex items-center">
+                        <span className="mr-2">{lang.flag}</span>
+                        <span>{lang.name}</span>
+                      </div>
+                      {language === lang.code && (
+                        <Check className="w-4 h-4 text-primary" />
+                      )}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
               <Button
                 variant="ghost"
                 size="sm"

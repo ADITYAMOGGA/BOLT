@@ -523,3 +523,27 @@ button:focus-visible, input:focus-visible {
   outline: 2px solid hsl(var(--primary));
   outline-offset: 2px;
 }
+
+/* Language support */
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+html[dir="rtl"] .flex {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-right: 0.5rem;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .space-x-3 > :not([hidden]) ~ :not([hidden]) {
+  margin-right: 0.75rem;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+  margin-right: 1rem;
+  margin-left: 0;
+}

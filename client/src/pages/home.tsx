@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { useAuth } from '@/contexts/auth-context';
+import { useLanguage } from '@/contexts/language-context';
 import { Navigation } from '@/components/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +13,7 @@ export default function Home() {
   const [downloadCode, setDownloadCode] = useState('');
   const [, navigate] = useLocation();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -272,7 +274,7 @@ export default function Home() {
             {/* Section Label */}
             <div className="flex items-center mb-6">
               <div className="w-12 h-px bg-primary mr-4"></div>
-              <span className="text-sm font-semibold text-foreground uppercase tracking-wider">Actions</span>
+              <span className="text-sm font-semibold text-foreground uppercase tracking-wider">{t('actions.title')}</span>
               <div className="flex-1 h-px bg-border/50 ml-4"></div>
             </div>
             {/* Send Box - Dynamic content based on upload state */}
@@ -293,8 +295,8 @@ export default function Home() {
                 <>
                   <div className="flex items-center justify-between mb-8 relative z-10">
                     <div>
-                      <h2 className="text-3xl font-bold text-foreground mb-2">Send</h2>
-                      <p className="text-sm text-foreground/70">Upload files up to 200MB</p>
+                      <h2 className="text-3xl font-bold text-foreground mb-2">{t('send.title')}</h2>
+                      <p className="text-sm text-foreground/70">{t('send.description')}</p>
                     </div>
                     <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
                       <Plus className="w-6 h-6 text-primary" />
@@ -313,7 +315,7 @@ export default function Home() {
 
               {uploadStep === 'uploading' && (
                 <>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Uploading...</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('upload.uploading')}</h2>
                   <div className="space-y-4">
                     <div className="text-base font-medium text-gray-700 truncate p-3 bg-gray-50 rounded-lg" data-testid="text-filename">
                       {selectedFile?.name}
@@ -322,7 +324,7 @@ export default function Home() {
                     {/* Progress Bar */}
                     <div className="space-y-3">
                       <div className="flex justify-between items-center text-sm">
-                        <span className="font-medium text-gray-700">{uploadProgress}% Complete</span>
+                        <span className="font-medium text-gray-700">{uploadProgress}% {t('upload.complete')}</span>
                         <span className="text-gray-600">
                           {uploadSpeed > 0 ? (
                             uploadSpeed > 1024 * 1024 
@@ -349,14 +351,14 @@ export default function Home() {
                           {uploadedBytes > 0 && selectedFile ? (
                             `${(uploadedBytes / (1024 * 1024)).toFixed(1)} MB of ${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB`
                           ) : (
-                            'Preparing upload...'
+                            t('upload.preparing')
                           )}
                         </span>
                         <span>
                           {uploadSpeed > 0 && selectedFile && uploadedBytes > 0 ? (
                             `ETA: ${Math.max(0, Math.ceil((selectedFile.size - uploadedBytes) / uploadSpeed))}s`
                           ) : (
-                            'Calculating...'
+                            t('upload.calculating')
                           )}
                         </span>
                       </div>
@@ -491,8 +493,8 @@ export default function Home() {
                 <>
                   <div className="flex items-center justify-between mb-8 relative z-10">
                     <div>
-                      <h2 className="text-3xl font-bold text-foreground mb-2">Receive</h2>
-                      <p className="text-sm text-foreground/70">Enter 6-character code</p>
+                      <h2 className="text-3xl font-bold text-foreground mb-2">{t('receive.title')}</h2>
+                      <p className="text-sm text-foreground/70">{t('receive.description')}</p>
                     </div>
                     <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
                       <Download className="w-6 h-6 text-primary" />
@@ -503,7 +505,7 @@ export default function Home() {
                       <Input
                         id="download-code"
                         type="text"
-                        placeholder="ABC123"
+                        placeholder={t('receive.placeholder')}
                         value={downloadCode}
                         onChange={(e) => setDownloadCode(e.target.value.toUpperCase())}
                         maxLength={6}
@@ -577,22 +579,22 @@ export default function Home() {
             {/* Section Label */}
             <div className="flex items-center mb-8">
               <div className="w-12 h-px bg-primary mr-4"></div>
-              <span className="text-sm font-semibold text-foreground uppercase tracking-wider">Overview</span>
+              <span className="text-sm font-semibold text-foreground uppercase tracking-wider">{t('overview.title')}</span>
               <div className="flex-1 h-px bg-border/50 ml-4"></div>
             </div>
             {/* Stats Bar */}
             <div className="grid grid-cols-3 gap-6 mb-12">
               <div className="text-center p-4 bg-card backdrop-blur-sm rounded-xl border border-border shadow-lg animate-stagger opacity-0">
                 <div className="text-2xl font-bold text-primary mb-1">256-bit</div>
-                <div className="text-xs text-foreground/70 uppercase tracking-wide">Encryption</div>
+                <div className="text-xs text-foreground/70 uppercase tracking-wide">{t('stats.encryption')}</div>
               </div>
               <div className="text-center p-4 bg-card backdrop-blur-sm rounded-xl border border-border shadow-lg animate-stagger opacity-0">
                 <div className="text-2xl font-bold text-primary mb-1">200MB</div>
-                <div className="text-xs text-foreground/70 uppercase tracking-wide">Max Size</div>
+                <div className="text-xs text-foreground/70 uppercase tracking-wide">{t('stats.maxSize')}</div>
               </div>
               <div className="text-center p-4 bg-card backdrop-blur-sm rounded-xl border border-border shadow-lg animate-stagger opacity-0">
                 <div className="text-2xl font-bold text-primary mb-1">24hrs</div>
-                <div className="text-xs text-foreground/70 uppercase tracking-wide">Auto Delete</div>
+                <div className="text-xs text-foreground/70 uppercase tracking-wide">{t('stats.autoDelete')}</div>
               </div>
             </div>
             
@@ -726,12 +728,6 @@ export default function Home() {
 
 
 
-        {/* Language Selector - Bottom Right */}
-        <div className="fixed bottom-6 right-6">
-          <Button variant="ghost" size="lg" className="text-foreground hover:text-primary bg-background/80 backdrop-blur-sm hover:bg-background/90 rounded-full p-4 border-2 border-border">
-            <Globe className="w-5 h-5" />
-          </Button>
-        </div>
       </div>
     </div>
   );
