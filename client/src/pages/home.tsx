@@ -22,31 +22,70 @@ export default function Home() {
   const [sharingMethod, setSharingMethod] = useState<'code' | 'link' | 'email'>('code');
   const [timeLeft, setTimeLeft] = useState<number>(30 * 60); // 30 minutes in seconds
   
+  // Upload progress state
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [uploadSpeed, setUploadSpeed] = useState<number>(0);
+  const [uploadStartTime, setUploadStartTime] = useState<number>(0);
+  const [uploadedBytes, setUploadedBytes] = useState<number>(0);
+  
   // Receive state management
   const [receiveStep, setReceiveStep] = useState<'initial' | 'loading' | 'found'>('initial');
   const [foundFile, setFoundFile] = useState<any>(null);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
+      return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const xhr = new XMLHttpRequest();
+        
+        // Track upload progress
+        xhr.upload.addEventListener('progress', (event) => {
+          if (event.lengthComputable) {
+            const progress = Math.round((event.loaded / event.total) * 100);
+            setUploadProgress(progress);
+            setUploadedBytes(event.loaded);
+            
+            // Calculate upload speed
+            const currentTime = Date.now();
+            const timeElapsed = (currentTime - uploadStartTime) / 1000; // seconds
+            if (timeElapsed > 0) {
+              const speed = event.loaded / timeElapsed; // bytes per second
+              setUploadSpeed(speed);
+            }
+          }
+        });
+        
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              resolve(data);
+            } catch (error) {
+              reject(new Error('Invalid response format'));
+            }
+          } else {
+            reject(new Error(`${xhr.status}: ${xhr.responseText}`));
+          }
+        });
+        
+        xhr.addEventListener('error', () => {
+          reject(new Error('Network error occurred'));
+        });
+        
+        xhr.open('POST', '/api/upload');
+        xhr.withCredentials = true;
+        xhr.send(formData);
       });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`${response.status}: ${errorText}`);
-      }
-
-      return response.json();
     },
     onSuccess: (data) => {
       setUploadedFileData(data);
       setUploadStep('sharing');
+      // Reset progress states
+      setUploadProgress(0);
+      setUploadSpeed(0);
+      setUploadedBytes(0);
     },
     onError: (error: any) => {
       toast({
@@ -56,6 +95,10 @@ export default function Home() {
       });
       setUploadStep('initial');
       setSelectedFile(null);
+      // Reset progress states
+      setUploadProgress(0);
+      setUploadSpeed(0);
+      setUploadedBytes(0);
     },
   });
 
@@ -64,6 +107,10 @@ export default function Home() {
     if (file) {
       setSelectedFile(file);
       setUploadStep('uploading');
+      setUploadStartTime(Date.now());
+      setUploadProgress(0);
+      setUploadSpeed(0);
+      setUploadedBytes(0);
       uploadMutation.mutate(file);
     }
   };
@@ -101,6 +148,9 @@ export default function Home() {
     setUploadedFileData(null);
     setSharingMethod('code');
     setTimeLeft(30 * 60);
+    setUploadProgress(0);
+    setUploadSpeed(0);
+    setUploadedBytes(0);
   };
 
   const handleCodeSubmit = async (e: React.FormEvent) => {
@@ -249,9 +299,48 @@ export default function Home() {
                     <div className="text-base font-medium text-gray-700 truncate p-3 bg-gray-50 rounded-lg" data-testid="text-filename">
                       {selectedFile?.name}
                     </div>
-                    <div className="flex items-center space-x-4">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                      <span className="text-base text-gray-600">Uploading file...</span>
+                    
+                    {/* Progress Bar */}
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="font-medium text-gray-700">{uploadProgress}% Complete</span>
+                        <span className="text-gray-600">
+                          {uploadSpeed > 0 ? (
+                            uploadSpeed > 1024 * 1024 
+                              ? `${(uploadSpeed / (1024 * 1024)).toFixed(1)} MB/s`
+                              : uploadSpeed > 1024
+                              ? `${(uploadSpeed / 1024).toFixed(1)} KB/s`
+                              : `${uploadSpeed.toFixed(0)} B/s`
+                          ) : '---'}
+                        </span>
+                      </div>
+                      
+                      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div 
+                          className="bg-primary h-3 rounded-full transition-all duration-300 ease-out relative"
+                          style={{ width: `${uploadProgress}%` }}
+                          data-testid="upload-progress-bar"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between items-center text-xs text-gray-500">
+                        <span>
+                          {uploadedBytes > 0 && selectedFile ? (
+                            `${(uploadedBytes / (1024 * 1024)).toFixed(1)} MB of ${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB`
+                          ) : (
+                            'Preparing upload...'
+                          )}
+                        </span>
+                        <span>
+                          {uploadSpeed > 0 && selectedFile && uploadedBytes > 0 ? (
+                            `ETA: ${Math.max(0, Math.ceil((selectedFile.size - uploadedBytes) / uploadSpeed))}s`
+                          ) : (
+                            'Calculating...'
+                          )}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </>
