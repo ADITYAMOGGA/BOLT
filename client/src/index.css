@@ -4,38 +4,38 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(15 67% 78%);
-  --foreground: hsl(20 85% 15%);
+  --background: hsl(58 79% 93%);
+  --foreground: hsl(194 100% 15%);
   --card: hsl(0 0% 100%);
-  --card-foreground: hsl(20 85% 15%);
+  --card-foreground: hsl(194 100% 15%);
   --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(20 85% 15%);
-  --primary: hsl(20 85% 29%);
+  --popover-foreground: hsl(194 100% 15%);
+  --primary: hsl(194 100% 33%);
   --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(15 50% 85%);
-  --secondary-foreground: hsl(20 85% 20%);
-  --muted: hsl(15 40% 90%);
-  --muted-foreground: hsl(20 60% 40%);
-  --accent: hsl(15 67% 78%);
-  --accent-foreground: hsl(20 85% 15%);
-  --destructive: hsl(0 75% 60%);
+  --secondary: hsl(183 100% 36%);
+  --secondary-foreground: hsl(0 0% 100%);
+  --muted: hsl(29 97% 86%);
+  --muted-foreground: hsl(194 60% 40%);
+  --accent: hsl(183 100% 36%);
+  --accent-foreground: hsl(0 0% 100%);
+  --destructive: hsl(4 83% 67%);
   --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(20 85% 29%);
-  --input: hsl(0 0% 98%);
-  --ring: hsl(20 85% 29%);
-  --chart-1: hsl(20 85% 29%);
-  --chart-2: hsl(15 67% 78%);
-  --chart-3: hsl(20 70% 35%);
-  --chart-4: hsl(15 50% 70%);
-  --chart-5: hsl(18 60% 50%);
+  --border: hsl(194 100% 33%);
+  --input: hsl(58 79% 98%);
+  --ring: hsl(194 100% 33%);
+  --chart-1: hsl(194 100% 33%);
+  --chart-2: hsl(183 100% 36%);
+  --chart-3: hsl(29 97% 76%);
+  --chart-4: hsl(4 83% 67%);
+  --chart-5: hsl(58 79% 83%);
   --sidebar: hsl(0 0% 100%);
-  --sidebar-foreground: hsl(20 85% 15%);
-  --sidebar-primary: hsl(20 85% 29%);
+  --sidebar-foreground: hsl(194 100% 15%);
+  --sidebar-primary: hsl(194 100% 33%);
   --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(15 40% 90%);
-  --sidebar-accent-foreground: hsl(20 85% 15%);
-  --sidebar-border: hsl(20 85% 29%);
-  --sidebar-ring: hsl(20 85% 29%);
+  --sidebar-accent: hsl(29 97% 86%);
+  --sidebar-accent-foreground: hsl(194 100% 15%);
+  --sidebar-border: hsl(194 100% 33%);
+  --sidebar-ring: hsl(194 100% 33%);
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: 'SF Mono', Monaco, monospace;
@@ -51,38 +51,38 @@
 }
 
 .dark {
-  --background: hsl(20 85% 10%);
-  --foreground: hsl(15 67% 85%);
-  --card: hsl(20 70% 15%);
-  --card-foreground: hsl(15 67% 85%);
-  --popover: hsl(20 70% 15%);
-  --popover-foreground: hsl(15 67% 85%);
-  --primary: hsl(15 67% 78%);
-  --primary-foreground: hsl(20 85% 15%);
-  --secondary: hsl(20 60% 20%);
-  --secondary-foreground: hsl(15 60% 80%);
-  --muted: hsl(20 50% 18%);
-  --muted-foreground: hsl(15 40% 65%);
-  --accent: hsl(15 67% 78%);
-  --accent-foreground: hsl(20 85% 15%);
-  --destructive: hsl(0 75% 60%);
+  --background: hsl(194 100% 8%);
+  --foreground: hsl(58 79% 90%);
+  --card: hsl(194 80% 12%);
+  --card-foreground: hsl(58 79% 90%);
+  --popover: hsl(194 80% 12%);
+  --popover-foreground: hsl(58 79% 90%);
+  --primary: hsl(183 100% 36%);
+  --primary-foreground: hsl(194 100% 8%);
+  --secondary: hsl(194 100% 20%);
+  --secondary-foreground: hsl(58 79% 90%);
+  --muted: hsl(194 60% 15%);
+  --muted-foreground: hsl(58 50% 70%);
+  --accent: hsl(29 97% 76%);
+  --accent-foreground: hsl(194 100% 8%);
+  --destructive: hsl(4 83% 67%);
   --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(15 67% 78%);
-  --input: hsl(20 40% 25%);
-  --ring: hsl(15 67% 78%);
-  --chart-1: hsl(217 91% 60%);
-  --chart-2: hsl(159 75% 50%);
-  --chart-3: hsl(42 85% 55%);
-  --chart-4: hsl(147 75% 42%);
-  --chart-5: hsl(341 75% 51%);
-  --sidebar: hsl(210 11% 6%);
-  --sidebar-foreground: hsl(213 31% 91%);
-  --sidebar-primary: hsl(217 91% 60%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(210 11% 11%);
-  --sidebar-accent-foreground: hsl(213 31% 91%);
-  --sidebar-border: hsl(210 11% 11%);
-  --sidebar-ring: hsl(217 91% 60%);
+  --border: hsl(183 100% 36%);
+  --input: hsl(194 60% 18%);
+  --ring: hsl(183 100% 36%);
+  --chart-1: hsl(183 100% 36%);
+  --chart-2: hsl(194 100% 33%);
+  --chart-3: hsl(29 97% 76%);
+  --chart-4: hsl(4 83% 67%);
+  --chart-5: hsl(58 79% 73%);
+  --sidebar: hsl(194 100% 6%);
+  --sidebar-foreground: hsl(58 79% 90%);
+  --sidebar-primary: hsl(183 100% 36%);
+  --sidebar-primary-foreground: hsl(194 100% 8%);
+  --sidebar-accent: hsl(194 60% 12%);
+  --sidebar-accent-foreground: hsl(58 79% 90%);
+  --sidebar-border: hsl(194 60% 15%);
+  --sidebar-ring: hsl(183 100% 36%);
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: 'SF Mono', Monaco, monospace;
@@ -196,8 +196,8 @@
 
 .upload-zone.dragover {
   transform: scale(1.02);
-  border-color: #2563EB;
-  background-color: rgba(37, 99, 235, 0.05);
+  border-color: hsl(var(--primary));
+  background-color: hsl(var(--primary) / 0.05);
 }
 
 /* File card effects */
@@ -312,7 +312,7 @@
 
 /* Gradient text */
 .bg-gradient-to-r.from-blue-600.to-emerald-500 {
-  background: linear-gradient(to right, #2563eb, #059669);
+  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--secondary)));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
